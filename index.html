@@ -191,13 +191,15 @@
 
         /* SHOW / HIDE SUMMARY */
         details:not([open]) summary {
-            font-size: 0px;
+            filter: opacity(0);
         }
 
         details:not([open]) summary:before {
             content: "Click to Show Summary";
             font-size: 0.8em !important;
             cursor: pointer;
+            display: inline-block;
+            filter: opacity(1) !important;
         }
         /* Feed Sections */
         .feed-section {
