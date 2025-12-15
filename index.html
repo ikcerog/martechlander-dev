@@ -374,7 +374,6 @@
 
         .news-card h4 { margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.4; }
         .news-card h4 a { color: var(--accent-color); text-decoration: none; transition: color 0.2s; }
-        .news-card h4 a:hover { color: var(--primary-color); }
         body.dark-mode .news-card h4 a:hover, body.midnight-mode .news-card h4 a:hover { color: var(--text-color); }
 
         .news-card .description {
@@ -591,6 +590,7 @@
             body.classList.add(newTheme);
             
             localStorage.setItem('theme', newTheme);
+            // Set the button text to prompt the switch to the *next* theme (which is the current theme's label)
             toggleButton.textContent = THEME_LABELS[newTheme];
         }
 
@@ -603,9 +603,6 @@
             body.classList.remove(...THEMES);
             body.classList.add(savedTheme);
             
-            const nextIndex = (THEMES.indexOf(savedTheme) + 1) % THEMES.length;
-            const nextTheme = THEMES[nextIndex];
-
             // Set the button text to prompt the switch to the *next* theme
             toggleButton.textContent = THEME_LABELS[savedTheme];
         }
@@ -910,11 +907,6 @@
             const card = document.createElement('div');
             card.className = 'news-card';
            
-            // ... (rest of the createNewsCard function continues here)
-            // Original code cut-off point:
-            const pubDate = new Date(item.pubDate).toLocaleDateString('en-US', {
-
-            // ... (rest of the function's logic)
             const title = item.title || 'No Title';
             let description = item.description || item.content || '';
             const link = item.link || '#';
@@ -957,10 +949,12 @@
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            loadThemePreference(); // Must run first to set initial theme and button label
+            loadThemePreference();
             loadViewPreference(); 
             loadFilterBarPreference();
             loadHiddenLinks();
+            
+            // *** THE CRITICAL FIX: CALL THE MAIN FETCH FUNCTION ***
             fetchAndRenderAllFeeds();
         });
     </script>
