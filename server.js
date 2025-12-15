@@ -1,14 +1,115 @@
-// server.js (Focusing on the /api/summarize-news endpoint)
+// server.js
 
-// ... (Requires, Globals, and Helper functions like readCache, writeCache, formatTimestamp are unchanged) ...
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const fs = require('fs/promises'); // Use promises version of fs for async/await
+const { GoogleGenAI } = require("@google/genai");
 
-// 2. AI Summary Endpoint (Modified for Caching/Throttling)
+// Load environment variables locally (Render ignores this but it's good for local testing)
+require('dotenv').config(); 
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Caching and Throttling Configuration
+const CACHE_FILE = 'summary_cache.txt';
+const THROTTLE_MINUTES = 91;
+const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; // 91 minutes in milliseconds
+
+// The API key is now explicitly passed to the GoogleGenAI constructor,
+const apiKey = process.env.GEMINI_API_KEY;
+const ai = new GoogleGenAI({ apiKey: apiKey });
+
+// Middleware setup
+app.use(bodyParser.json({ limit: '50mb' })); // Increased limit for the large HTML content
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+// Assuming 'index.html' is in the root directory, no 'public' folder is needed here, 
+// but we keep the static setup for robustness if other assets are used.
+app.use(express.static(path.join(__dirname, 'public'))); 
+
+
+/**
+ * Reads the cache file and returns the timestamp and summary.
+ * @returns {Promise<{timestamp: number, summary: string}|null>}
+ */
+async function readCache() {
+    try {
+        const content = await fs.readFile(CACHE_FILE, 'utf8');
+        const lines = content.trim().split('\n');
+        
+        if (lines.length < 2) {
+            console.warn('Cache file is corrupted or incomplete.');
+            return null;
+        }
+
+        const timestamp = parseInt(lines[0], 10);
+        const summary = lines.slice(1).join('\n');
+
+        if (isNaN(timestamp)) {
+            console.error('Cache file contains an invalid timestamp.');
+            return null;
+        }
+
+        return { timestamp, summary };
+    } catch (error) {
+        // File not found is expected on first run
+        if (error.code !== 'ENOENT') {
+            console.error('Error reading cache file:', error);
+        }
+        return null;
+    }
+}
+
+/**
+ * Writes the new timestamp and summary to the cache file.
+ * @param {number} timestamp 
+ * @param {string} summary 
+ * @returns {Promise<void>}
+ */
+async function writeCache(timestamp, summary) {
+    const content = `${timestamp}\n${summary}`;
+    try {
+        await fs.writeFile(CACHE_FILE, content, 'utf8');
+    } catch (error) {
+        console.error('Error writing cache file:', error);
+    }
+}
+
+/**
+ * Formats a timestamp into a readable date/time string, forcing EST/EDT.
+ * @param {number} msTimestamp 
+ * @returns {string}
+ */
+function formatTimestamp(msTimestamp) {
+    if (!msTimestamp) return 'N/A';
+    return new Date(msTimestamp).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'America/New_York', // Force EST/EDT
+        timeZoneName: 'short'
+    });
+}
+
+
+// 1. Serve the main HTML file
+app.get('/', (req, res) => {
+    // __dirname is the current directory of server.js
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+
+// 2. AI Summary Endpoint (Modified for Caching/Throttling and separate output)
 app.post('/api/summarize-news', async (req, res) => {
     const htmlContent = req.body.htmlContent;
     const currentTime = Date.now();
     let cachedData = await readCache();
     let summaryToReturn = null;
-    let headerToReturn = null; // New variable for the header
+    let headerToReturn = null;
 
     if (cachedData) {
         const timeElapsed = currentTime - cachedData.timestamp;
@@ -44,8 +145,33 @@ app.post('/api/summarize-news', async (req, res) => {
         }
 
         const modelName = "gemini-2.5-flash"; 
+        // This input prompt remains consistent with the user's initial structure
         const inputPrompt = `
-            // ... (Your existing large prompt content here) ...
+            You are a senior strategic analyst specializing in AdTech, Marketing, and Enterprise Technology.
+            Your task is to analyze the following HTML content, which contains recent news articles from various industry feeds.
+
+            1. **SCAN** the provided HTML content for all titles, sources, and descriptions within the '.news-card' elements.
+            2. **IGNORE** all hidden elements or administrative content (like 'Hide Forever' buttons).
+            3. **GENERATE** a strategic summary in Markdown format that is ready to be directly displayed in a dashboard panel.
+
+            Your output MUST be structured using Markdown headings and lists, focusing on actionable insights:
+
+            ## 📰 Core Trends & Market Focus
+            * **[Trend 1/Topic]**: Briefly describe the key theme (e.g., "AI Regulation").
+            * **[Trend 2/Topic]**: Briefly describe the key theme (e.g., "Retail Media Expansion").
+            * ... (List 3-5 major recurring themes)
+
+            ## 💡 Strategic Takeaways for AdTech Leadership
+            * **For Branding & Campaigns**: What should leadership be doing right now based on the news?
+            * **For Ad Technology**: What specific technology area requires immediate investment or planning?
+            * **For Enterprise Tech/FinTech**: What is the key market shift that requires a business response?
+
+            ## 📉 Potential Risks & Blindspots
+            * [Risk 1]: A critical risk emerging from the news (e.g., privacy changes, economic downturn, competitor move).
+
+            ---
+            HTML Content to Analyze:
+            ---
             ${htmlContent}
         `;
         
@@ -77,11 +203,15 @@ app.post('/api/summarize-news', async (req, res) => {
         }
     }
     
-    // --- CHANGE: Return two separate fields ---
+    // Return two separate fields: the status header and the clean summary content.
     res.json({ 
         header: headerToReturn,
         summary: summaryToReturn 
     });
 });
 
-// ... (Rest of server.js) ...
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
