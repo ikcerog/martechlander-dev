@@ -189,19 +189,24 @@
             opacity: 0.8;
         }
 
-        /* SHOW / HIDE SUMMARY LABEL WHEN DETAILS IS CLOSED */
-details:not([open]) > summary {
-    /* Visually hide the original summary text but keep it in the DOM/for AT */
-    font-size: 0;
-}
-
-details:not([open]) > summary::before {
-    content: "Click to Show Summary";
-    font-size: 0.8em; /* visible replacement text */
-    cursor: pointer;
-    display: inline-block;
-}
-
+        /* Default summary text when open (normal behavior) */
+        details > summary {
+          font-size: 1em;
+        }
+        
+        /* When details is CLOSED, hide the real text... */
+        details:not([open]) > summary {
+          font-size: 0;
+        }
+        
+        /* ...and show alternate text instead */
+        details:not([open]) > summary::before {
+          content: "Click to Show Summary";
+          font-size: 0.8em;
+          cursor: pointer;
+          display: inline-block;
+        }
+        
         /* Feed Sections */
         .feed-section {
             padding: 20px;
