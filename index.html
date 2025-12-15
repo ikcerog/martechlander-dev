@@ -189,24 +189,6 @@
             opacity: 0.8;
         }
 
-        /* Default summary text when open (normal behavior) */
-        details > summary {
-          font-size: 1em;
-        }
-        
-        /* When details is CLOSED, hide the real text... */
-        details:not([open]) > summary {
-          font-size: 0;
-        }
-        
-        /* ...and show alternate text instead */
-        details:not([open]) > summary::before {
-          content: "Click to Show Summary";
-          font-size: 0.8em;
-          cursor: pointer;
-          display: inline-block;
-        }
-        
         /* Feed Sections */
         .feed-section {
             padding: 20px;
@@ -484,7 +466,7 @@
             </div>
         </div>
     </header>
-   <details open="open" style="max-width: 1400px; margin: 8px auto;"><summary>Click to hide AI Summary</summary>
+   
     <div id="ai-insight-panel" class="feed-section">
         <div id="ai-summary-header">
              <h2>✨ AI Strategy Summary [Deactivated in DEV]</h2>
@@ -494,7 +476,6 @@
             <p>AI summary is disabled in DEV</p>
         </div>
     </div>
-   </details>
 
 
     <div id="core-marketing-feed" class="feed-section">
@@ -553,8 +534,13 @@
         ];
 
         const EDITORIAL_FEEDS = [
+            // --- CORE MARKETING ---
             { id: 'core-marketing-feed', url: 'https://www.marketingdive.com/feeds/news', source: 'Marketing Dive' },
+            { id: 'core-marketing-feed', url: 'https://www.campaigndive.com/feeds/news', source: 'Campaign Dive' }, // ADDED: Campaign Dive
+           
+            // --- BRANDING & CAMPAIGNS ---
             { id: 'branding-advertising-feed', url: 'https://www.adweek.com/feed/', source: 'Adweek' }, 
+            { id: 'branding-advertising-feed', url: 'https://adage.com/rss', source: 'Ad Age' }, // ADDED: Ad Age
             { id: 'branding-advertising-feed', url: 'https://www.moreaboutadvertising.com/feed/', source: 'More About Adv.' },
             { id: 'branding-advertising-feed', url: 'https://feeds.feedburner.com/Adpulp', source: 'AdPulp' },
            
@@ -571,7 +557,9 @@
             { id: 'fintech-new-feed', url: 'https://www.ciodive.com/feed/', source: 'CIO Dive' },
             { id: 'fintech-new-feed', url: 'https://www.bankingdive.com/topic/fintech/feed/', source: 'Banking Dive' },
            
+            // --- TECH & CULTURE ---
             { id: 'tech-culture-feed', url: 'https://www.wired.com/feed/rss', source: 'Wired' }, 
+            { id: 'tech-culture-feed', url: 'https://www.fastcompany.com/rss', source: 'Fast Company' }, // ADDED: Fast Company
         ];
        
         const REDDIT_FEEDS = [
