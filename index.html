@@ -115,7 +115,7 @@
             justify-content: center;
         }
        
-        /* --- NEW: Filter Bar Container --- */
+        /* Filter Bar Container */
         #filter-bar-container {
             display: flex;
             flex-wrap: wrap;
@@ -407,12 +407,20 @@
             border-bottom: none;
             padding-bottom: 0;
         }
+        
+        /* New styling for the status/throttle message container */
+        #ai-summary-status {
+            padding: 10px 0 0 0;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            border-bottom: 1px dashed var(--border-color);
+        }
 
         #ai-summary-content {
             padding: 10px 0 0 0; /* Adjusted padding */
             line-height: 1.6;
             white-space: pre-wrap; /* Ensures the AI's formatting (like newlines) is respected */
-            border-top: 1px dashed var(--border-color);
             margin-top: 10px;
         }
         
@@ -466,17 +474,20 @@
             </div>
         </div>
     </header>
-   
-    <details open="open" style="margin: 8px auto; max-width: 1400px; border: 1px solid #eee; border-radius: 4px;"><summary>Click to Hide/Show AI Summary</summary>
-        <div id="ai-insight-panel" class="feed-section">
+   <center><details open="open" style="max-width: 1400px; margin: 8px; padding: 16px;"><summary>Click to Hide/Show the AI Summary</summary>
+    <div id="ai-insight-panel" class="feed-section">
         <div id="ai-summary-header">
-             <h2>✨ AI Strategy Summary [DEV]</h2>
+             <h2>✨ AI Strategy Summary [Deactivated in DEV]</h2>
              <button id="copy-summary-button" onclick="copyAISummary()" title="Copy the full AI Summary to your clipboard" disabled>Copy Summary</button>
         </div>
+        
+        <div id="ai-summary-status">
+            </div>
+        
         <div id="ai-summary-content">
-            <p>AI summary API use is slowed in DEV</p>
+            <p>AI summary is disabled in DEV</p>
         </div>
-    </div></details>
+    </div></details></center>
 
 
     <div id="core-marketing-feed" class="feed-section">
@@ -615,9 +626,10 @@
             toggleButton.textContent = THEME_LABELS[savedTheme];
         }
        
-        // --- NEW: CLICK TO COPY LOGIC ---
+        // --- UPDATED: CLICK TO COPY LOGIC (Excludes Header/Status) ---
         window.copyAISummary = async function() {
-            const summaryDiv = document.getElementById('ai-summary-content');
+            // CRITICAL CHANGE: Only target the clean content div, not the status header
+            const summaryDiv = document.getElementById('ai-summary-content'); 
             const copyButton = document.getElementById('copy-summary-button');
             const originalText = copyButton.textContent;
             
@@ -678,7 +690,7 @@
             setListView(savedView);
         }
 
-        // --- NEW: FILTER BAR TOGGLE LOGIC ---
+        // --- FILTER BAR TOGGLE LOGIC ---
         window.toggleFilterBar = function() {
             const filterBar = document.getElementById('filter-bar-container');
             const toggleButton = document.getElementById('toggle-filter-bar-btn');
@@ -775,15 +787,15 @@
 
         // --- AI SUMMARY INTEGRATION FUNCTION (Calls Server) ---
         async function generateAISummary() {
-            // ... (AI Summary logic remains the same) ...
-            const summaryDiv = document.getElementById('ai-summary-content');
+            const statusDiv = document.getElementById('ai-summary-status'); // NEW: For throttle message
+            const summaryDiv = document.getElementById('ai-summary-content'); // For clean summary
            
             // SECURITY CHECK: Must be run on http://localhost:3000, not file://
             if (window.location.protocol === 'file:') {
+                 statusDiv.innerHTML = ``;
                  summaryDiv.innerHTML = `<p><strong>Note:</strong> To use the AI Strategy Summary, you MUST run this file 
                  via your secure Node.js server (e.g., <code>http://localhost:3000</code>). 
                  The API endpoint is not accessible from a local <code>file://</code> URL.</p>`;
-                 // Disable copy button in dev mode
                  document.getElementById('copy-summary-button').disabled = true;
                  return;
             }
@@ -794,10 +806,12 @@
                 const htmlContent = feedsContainer ? feedsContainer.outerHTML : ''; 
 
                 if (!htmlContent.includes('news-card')) {
+                     statusDiv.innerHTML = ``;
                      summaryDiv.innerHTML = `<p>Awaiting news articles to load, then initiating AI analysis...</p>`;
                      return;
                 }
 
+                statusDiv.innerHTML = ``;
                 summaryDiv.innerHTML = `<p><strong>Generating AI summary and strategic recommendations...</strong></p>`;
 
                 // Call the secure server-side proxy endpoint
@@ -810,22 +824,23 @@
                 const data = await response.json();
 
                 if (response.status !== 200 || data.error) {
+                    statusDiv.innerHTML = ``;
                     summaryDiv.innerHTML = `<p style="color: var(--hide-color);">Error generating summary. Check Node.js console. (Server Status: ${response.status})</p>`;
                     console.error("AI Proxy Error:", data.error || 'Unknown server error.');
-                    // Still disabled on error
                     document.getElementById('copy-summary-button').disabled = true;
                     return;
                 }
 
-                // Display the clean AI response.
-                summaryDiv.innerHTML = data.summary; 
-                // Enable the copy button after successful summary generation
+                // CRITICAL CHANGE: Display header and summary separately
+                statusDiv.innerHTML = data.header; // The status/throttle message goes here
+                summaryDiv.innerHTML = data.summary; // The clean summary content goes here
+                
                 enableCopyButton();
 
             } catch (e) {
+                statusDiv.innerHTML = ``;
                 summaryDiv.innerHTML = `<p style="color: var(--hide-color);">Could not connect to AI server. Ensure <code>node server.js</code> is running on port 3000.</p>`;
                 console.error("Frontend Fetch Error:", e);
-                // Still disabled on connection error
                 document.getElementById('copy-summary-button').disabled = true;
             }
         }
