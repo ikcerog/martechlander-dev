@@ -87,6 +87,8 @@ function formatTimestamp(msTimestamp) {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
+        // --- FORCE EST/EDT ---
+        timeZone: 'America/New_York', 
         timeZoneName: 'short'
     });
 }
