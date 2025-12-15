@@ -195,8 +195,15 @@
         }
 
         details:not([open]) summary:before {
-            font-size: 12px;
             content: "Click to Show Summary";
+            background: none;
+            border: 1px solid white;
+            color: var(--hide-color);
+            font-size: 0.8em;
+            cursor: pointer;
+            padding: 0;
+            opacity: 0.7;
+            transition: opacity 0.2s;
         }
         /* Feed Sections */
         .feed-section {
@@ -475,7 +482,7 @@
             </div>
         </div>
     </header>
-   <details open="open" style="max-width: 1400px;"><summary>Click to hide AI Summary</summary>
+   <details open="open" style="max-width: 1400px; margin: 8px auto;"><summary>Click to hide AI Summary</summary>
     <div id="ai-insight-panel" class="feed-section">
         <div id="ai-summary-header">
              <h2>✨ AI Strategy Summary [Deactivated in DEV]</h2>
