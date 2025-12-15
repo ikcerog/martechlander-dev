@@ -189,18 +189,19 @@
             opacity: 0.8;
         }
 
-        /* SHOW / HIDE SUMMARY */
-        details:not([open]) summary {
-            filter: opacity(0);
-        }
+        /* SHOW / HIDE SUMMARY LABEL WHEN DETAILS IS CLOSED */
+details:not([open]) > summary {
+    /* Visually hide the original summary text but keep it in the DOM/for AT */
+    font-size: 0;
+}
 
-        details:not([open]) summary:before {
-            content: "Click to Show Summary";
-            font-size: 0.8em !important;
-            cursor: pointer;
-            display: inline-block;
-            filter: opacity(1) !important;
-        }
+details:not([open]) > summary::before {
+    content: "Click to Show Summary";
+    font-size: 0.8em; /* visible replacement text */
+    cursor: pointer;
+    display: inline-block;
+}
+
         /* Feed Sections */
         .feed-section {
             padding: 20px;
