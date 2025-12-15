@@ -147,14 +147,14 @@ app.post('/api/summarize-news', async (req, res) => {
         const modelName = "gemini-2.5-flash"; 
         // This input prompt remains consistent with the user's initial structure
         const inputPrompt = `
-            You are a senior strategic analyst specializing in AdTech, Marketing, and Enterprise Technology.
-            Your task is to analyze the following HTML content, which contains recent news articles from various industry feeds.
+            Provide perspective from the vantage of a senior strategic analyst specializing in AdTech, Marketing, and Enterprise Technology.
+            Analyze the following HTML content, which contains recent news articles from various industry feeds.
 
             1. **SCAN** the provided HTML content for all titles, sources, and descriptions within the '.news-card' elements.
             2. **IGNORE** all hidden elements or administrative content (like 'Hide Forever' buttons).
             3. **GENERATE** a strategic summary in Markdown format that is ready to be directly displayed in a dashboard panel.
 
-            Your output MUST be structured using Markdown headings and lists, focusing on actionable insights:
+            Your output MUST be structured using Markdown headings and lists, focusing on actionable insights, without preamble go directly into:
 
             ## 📰 Core Trends & Market Focus
             * **[Trend 1/Topic]**: Briefly describe the key theme (e.g., "AI Regulation").
