@@ -123,7 +123,7 @@ app.post('/api/summarize-news', async (req, res) => {
                 ## ⏳ Summary Throttle Active ⏳
                 This summary was last generated at **${formatTimestamp(cachedData.timestamp)}**.
                 The next beneficial generation time is **${formatTimestamp(nextRunTime)}** (in ${Math.ceil(timeRemaining / (60 * 1000))} minutes).
-                The AI model was not called to conserve API resources.
+                The AI model was not called, to conserve the finite API interactions per day.
                 ---
             `;
             
