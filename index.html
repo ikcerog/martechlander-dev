@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEV 📣 AdTech News</title>
-    
+   
     <style>
         /* --- CSS Styling and Variables --- */
         :root {
@@ -77,7 +77,7 @@
             top: 0;
             z-index: 100;
         }
-        
+       
         /* Header Max-Width Container */
         .header-content {
             max-width: 1400px;
@@ -114,7 +114,7 @@
             gap: 10px;
             justify-content: center;
         }
-        
+       
         /* --- NEW: Filter Bar Container --- */
         #filter-bar-container {
             display: flex;
@@ -126,13 +126,13 @@
             max-height: 200px; /* Max height when visible */
             padding-top: 10px;
         }
-        
+       
         #filter-bar-container.hidden {
             max-height: 0;
             opacity: 0;
             padding-top: 0;
         }
-        
+       
         /* Theme, View, and Filter Buttons */
         .control-button {
             padding: 8px 15px;
@@ -148,21 +148,21 @@
         .control-button:hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
-        
+       
         /* Highlight active filter button */
         .control-button.active {
             background-color: white;
             color: var(--primary-color);
             border-color: white;
         }
-        
+       
         body.dark-mode .control-button.active, body.midnight-mode .control-button.active {
             background-color: var(--accent-color);
             color: white;
             border-color: var(--accent-color);
         }
 
-        
+       
         /* View Toggle Specific Styling */
         #view-toggle-row {
             display: flex;
@@ -180,7 +180,7 @@
             color: var(--primary-color);
         }
 
-        
+       
         #reset-hidden-button {
             background-color: var(--hide-color);
             border-color: var(--hide-color);
@@ -197,7 +197,7 @@
             transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
             overflow: hidden;
         }
-        
+       
         .feed-section.hidden {
             max-height: 0;
             opacity: 0;
@@ -220,7 +220,7 @@
             border-bottom-color: var(--accent-color);
             color: var(--text-color);
         }
-        
+       
         /* Specific header colors for flair */
         #community-pulse-feed h2 { color: var(--secondary-accent-1); }
         #branding-advertising-feed h2 { color: var(--secondary-accent-2); }
@@ -231,14 +231,14 @@
 
 
         /* --- VIEW CONTROLS CSS (Grid and List) --- */
-        
+       
         /* Default: GRID VIEW (Multi-Column) */
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-        
+       
         .news-card {
             display: flex;
             flex-direction: column;
@@ -251,27 +251,27 @@
             flex-direction: column;
             gap: 10px; 
         }
-        
+       
         body.list-view .feed-section:not(#community-pulse-feed) .news-card {
             flex-direction: row;
             align-items: center;
             padding: 15px 20px;
             width: auto; 
         }
-        
+       
         body.list-view .feed-section:not(#community-pulse-feed) .news-card h4 {
             flex-basis: 50%;
             margin: 0;
             font-size: 1.1em;
             order: 1;
         }
-        
+       
         body.list-view .feed-section:not(#community-pulse-feed) .news-card .description,
         /* Hide the default card controls in List View */
         body.list-view .feed-section:not(#community-pulse-feed) .news-card > .card-controls.grid-controls {
             display: none; 
         }
-        
+       
         /* Target the combined date and control container in List View */
         body.list-view .feed-section:not(#community-pulse-feed) .news-card .date-and-controls {
             display: flex;
@@ -290,7 +290,7 @@
             font-size: 0.9em;
             flex-shrink: 0; 
         }
-        
+       
         body.list-view .feed-section:not(#community-pulse-feed) .news-card .card-controls.list-controls {
             /* This is the inner .card-controls inside .date-and-controls */
             display: flex !important; /* Override display:none from above */
@@ -299,7 +299,7 @@
             margin: 0;
             flex-shrink: 0; 
         }
-        
+       
         body.list-view .feed-section:not(#community-pulse-feed) .news-card .card-controls.list-controls span {
             display: none; 
         }
@@ -327,7 +327,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             transition: all 0.2s;
         }
-        
+       
         .news-card.hidden-tile, .news-card.auto-filtered {
             display: none !important;
         }
@@ -336,21 +336,21 @@
             transform: translateY(-3px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
-        
+       
         /* Grid View Controls (Default for .card-controls) */
         .card-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px; 
+            margin-bottom: 5px;  
         }
-        
+       
         .card-controls span {
             font-size: 0.7em;
             color: var(--secondary-text-color);
             opacity: 0.8;
         }
-        
+       
         .card-controls button {
             background: none;
             border: none;
@@ -361,11 +361,11 @@
             opacity: 0.7;
             transition: opacity 0.2s;
         }
-        
+       
         .card-controls button:hover {
             opacity: 1;
         }
-        
+       
         /* List View control needs to be explicitly shown/hidden */
         .card-controls.list-controls {
             display: none; /* Hidden by default, shown in list-view mode */
@@ -382,9 +382,9 @@
             color: var(--secondary-text-color);
             line-height: 1.5;
             margin-top: 0;
-            flex-grow: 1; 
+            flex-grow: 1;  
         }
-        
+       
         /* AI Summary Panel Specific Styling */
         #ai-insight-panel {
             background-color: var(--card-background);
@@ -392,11 +392,45 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
+            padding: 20px; /* Add padding for a better look */
         }
+        
+        #ai-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        #ai-summary-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
         #ai-summary-content {
-            padding: 10px;
+            padding: 10px 0 0 0; /* Adjusted padding */
             line-height: 1.6;
             white-space: pre-wrap; /* Ensures the AI's formatting (like newlines) is respected */
+            border-top: 1px dashed var(--border-color);
+            margin-top: 10px;
+        }
+        
+        #copy-summary-button {
+            padding: 5px 10px;
+            border: 1px solid var(--accent-color);
+            background-color: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+
+        #copy-summary-button:hover {
+            opacity: 0.9;
+            background-color: var(--primary-color);
         }
     </style>
 </head>
@@ -405,13 +439,13 @@
         <div class="header-content">
             <div class="header-top">
                 <h1>🚧 DEV 📣 AdTech News</h1>
-                <button id="theme-toggle" class="control-button">☀️ Switch to Dark Mode</button>
+                <button id="theme-toggle" class="control-button" onclick="toggleTheme()">☀️ Switch to Dark Mode</button>
             </div>
-            
+           
             <div id="search-container">
                 <input type="text" id="search-input" placeholder="Start searching across all feeds..." onkeyup="filterCards()">
             </div>
-            
+           
             <div class="controls-row">
                 <button id="toggle-filter-bar-btn" class="control-button" onclick="toggleFilterBar()">Hide Filter Bar</button>
 
@@ -419,10 +453,10 @@
                     <button id="grid-view-button" class="view-button control-button" onclick="setListView('grid')">Grid View</button>
                     <button id="list-view-button" class="view-button control-button" onclick="setListView('list')">List View</button>
                 </div>
-                
+               
                 <button id="reset-hidden-button" class="control-button" onclick="resetHiddenTiles()">Reset Hidden Tiles</button>
             </div>
-            
+           
             <div id="filter-bar-container">
                 <button id="toggle-core-marketing" class="control-button active" data-target="core-marketing-feed" onclick="toggleSection(this)">Core Marketing</button>
                 <button id="toggle-branding" class="control-button active" data-target="branding-advertising-feed" onclick="toggleSection(this)">Branding & Campaigns</button>
@@ -433,9 +467,12 @@
             </div>
         </div>
     </header>
-    
+   
     <div id="ai-insight-panel" class="feed-section">
-        <h2>✨ AI Strategy Summary [Deactivated in DEV]</h2>
+        <div id="ai-summary-header">
+             <h2>✨ AI Strategy Summary [Deactivated in DEV]</h2>
+             <button id="copy-summary-button" onclick="copyAISummary()" title="Copy the full AI Summary to your clipboard" disabled>Copy Summary</button>
+        </div>
         <div id="ai-summary-content">
             <p>AI summary is disabled in DEV</p>
         </div>
@@ -476,13 +513,13 @@
             <div class="news-grid">Loading Tech & Culture...</div>
         </div>
     </div>
-    
+   
     <div id="community-pulse-feed" class="feed-section">
         <h2>🗣️ Community Pulse (Reddit Subreddits)</h2>
         <div id="community-pulse-container">
-            </div>
+        </div>
     </div>
-    
+   
     <script>
         /* --- JavaScript for Theme Switching, Fetching, Rendering, and Controls --- */
 
@@ -502,7 +539,7 @@
             { id: 'branding-advertising-feed', url: 'https://www.adweek.com/feed/', source: 'Adweek' }, 
             { id: 'branding-advertising-feed', url: 'https://www.moreaboutadvertising.com/feed/', source: 'More About Adv.' },
             { id: 'branding-advertising-feed', url: 'https://feeds.feedburner.com/Adpulp', source: 'AdPulp' },
-            
+           
             // --- EXPANDED AD TECH FEEDS ---
             { id: 'ad-tech-feed', url: 'https://www.adexchanger.com/feed/', source: 'AdExchanger' },
             { id: 'ad-tech-feed', url: 'https://adtechdaily.com/feed/', source: 'Ad Tech Daily' },
@@ -511,14 +548,14 @@
             { id: 'ad-tech-feed', url: 'https://clearcode.cc/feed', source: 'Clearcode Blog' },
             { id: 'ad-tech-feed', url: 'https://medium.com/feed/ipg-media-lab', source: 'IPG Media Lab' }, // Programmatic / Innovation
             { id: 'ad-tech-feed', url: 'https://silverpush.co/feed', source: 'SilverPush Blog' }, // Video/AI AdTech
-            
+           
             // --- ENTERPRISE & FINTECH SECTION ---
             { id: 'fintech-new-feed', url: 'https://www.ciodive.com/feed/', source: 'CIO Dive' },
             { id: 'fintech-new-feed', url: 'https://www.bankingdive.com/topic/fintech/feed/', source: 'Banking Dive' },
-            
+           
             { id: 'tech-culture-feed', url: 'https://www.wired.com/feed/rss', source: 'Wired' }, 
         ];
-        
+       
         const REDDIT_FEEDS = [
             { id: 'r/marketing', url: 'https://www.reddit.com/r/marketing.rss' },
             { id: 'r/advertising', url: 'https://www.reddit.com/r/advertising.rss' },
@@ -526,10 +563,10 @@
             { id: 'r/fintech', url: 'https://www.reddit.com/r/Fintech.rss' },
             { id: 'r/userexperience', url: 'https://www.reddit.com/r/userexperience.rss' },
         ];
-        
+       
         const RSS_TO_JSON_PROXY_BASE = 'https://api.rss2json.com/v1/api.json?rss_url=';
         let HIDDEN_LINKS = new Set();
-        
+       
         // --- THEME LOGIC (Triple Mode) ---
         const THEMES = ['light-mode', 'dark-mode', 'midnight-mode'];
         const THEME_LABELS = {
@@ -541,13 +578,18 @@
         function toggleTheme() {
             const body = document.body;
             const toggleButton = document.getElementById('theme-toggle');
-            let currentTheme = localStorage.getItem('theme') || 'light-mode';
+            
+            // Get current theme from body class (or default)
+            let currentTheme = THEMES.find(t => body.classList.contains(t)) || 'light-mode';
             
             const currentIndex = THEMES.indexOf(currentTheme);
             const nextIndex = (currentIndex + 1) % THEMES.length;
             const newTheme = THEMES[nextIndex];
 
-            body.className = newTheme;
+            // Remove all existing theme classes and add the new one
+            body.classList.remove(...THEMES);
+            body.classList.add(newTheme);
+            
             localStorage.setItem('theme', newTheme);
             toggleButton.textContent = THEME_LABELS[newTheme];
         }
@@ -556,12 +598,58 @@
             const body = document.body;
             const toggleButton = document.getElementById('theme-toggle');
             const savedTheme = localStorage.getItem('theme') || 'light-mode';
-            body.className = savedTheme;
+            
+            // Apply the saved theme and set the correct button label
+            body.classList.remove(...THEMES);
+            body.classList.add(savedTheme);
+            
+            const nextIndex = (THEMES.indexOf(savedTheme) + 1) % THEMES.length;
+            const nextTheme = THEMES[nextIndex];
+
+            // Set the button text to prompt the switch to the *next* theme
             toggleButton.textContent = THEME_LABELS[savedTheme];
         }
-        
+       
+        // --- NEW: CLICK TO COPY LOGIC ---
+        window.copyAISummary = async function() {
+            const summaryDiv = document.getElementById('ai-summary-content');
+            const copyButton = document.getElementById('copy-summary-button');
+            const originalText = copyButton.textContent;
+            
+            // Use innerText to grab the readable, rendered content
+            const textToCopy = summaryDiv.innerText;
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                copyButton.textContent = '✅ Copied!';
+                copyButton.style.backgroundColor = 'var(--secondary-accent-1)';
+                copyButton.style.borderColor = 'var(--secondary-accent-1)';
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                copyButton.textContent = '❌ Failed!';
+                copyButton.style.backgroundColor = 'var(--hide-color)';
+                copyButton.style.borderColor = 'var(--hide-color)';
+            }
+
+            // Revert button text and color after a short delay
+            setTimeout(() => {
+                copyButton.textContent = originalText;
+                copyButton.style.backgroundColor = 'var(--accent-color)';
+                copyButton.style.borderColor = 'var(--accent-color)';
+            }, 2000);
+        }
+
+        // Helper to enable the copy button once the summary is loaded
+        function enableCopyButton() {
+             const copyButton = document.getElementById('copy-summary-button');
+             copyButton.disabled = false;
+             copyButton.textContent = 'Copy Summary';
+        }
+        // --- END CLICK TO COPY LOGIC ---
+
+
         // --- VIEW TOGGLE LOGIC ---
-        
+       
         window.setListView = function(view) {
             const body = document.body;
             const gridButton = document.getElementById('grid-view-button');
@@ -589,9 +677,9 @@
         window.toggleFilterBar = function() {
             const filterBar = document.getElementById('filter-bar-container');
             const toggleButton = document.getElementById('toggle-filter-bar-btn');
-            
+           
             const isHidden = filterBar.classList.toggle('hidden');
-            
+           
             if (isHidden) {
                 toggleButton.textContent = 'Show Filter Bar';
                 localStorage.setItem('filterBarHidden', 'true');
@@ -600,12 +688,12 @@
                 localStorage.setItem('filterBarHidden', 'false');
             }
         }
-        
+       
         function loadFilterBarPreference() {
             const filterBar = document.getElementById('filter-bar-container');
             const toggleButton = document.getElementById('toggle-filter-bar-btn');
             const isHidden = localStorage.getItem('filterBarHidden') === 'true';
-            
+           
             if (isHidden) {
                 filterBar.classList.add('hidden');
                 toggleButton.textContent = 'Show Filter Bar';
@@ -616,14 +704,14 @@
         }
 
         // --- PERSISTENCE & UTILITY LOGIC ---
-        
+       
         function loadHiddenLinks() {
             const storedLinks = localStorage.getItem('hiddenNewsLinks');
             if (storedLinks) {
                 HIDDEN_LINKS = new Set(JSON.parse(storedLinks));
             }
         }
-        
+       
         function saveHiddenLinks() {
             localStorage.setItem('hiddenNewsLinks', JSON.stringify(Array.from(HIDDEN_LINKS)));
         }
@@ -636,7 +724,7 @@
                 saveHiddenLinks();
             }
         }
-        
+       
         window.resetHiddenTiles = function() {
             if (confirm("Are you sure you want to reset all permanently hidden news tiles? This cannot be undone.")) {
                 localStorage.removeItem('hiddenNewsLinks');
@@ -644,7 +732,7 @@
                 location.reload(); 
             }
         }
-        
+       
         window.filterCards = function() {
             const input = document.getElementById('search-input');
             const filter = input.value.toLowerCase();
@@ -653,7 +741,7 @@
             cards.forEach(card => {
                 const title = card.getAttribute('data-search-title');
                 const description = card.getAttribute('data-search-desc');
-                
+               
                 if (title.includes(filter) || description.includes(filter)) {
                     card.style.display = ''; 
                 } else {
@@ -661,7 +749,7 @@
                 }
             });
         }
-        
+       
         window.toggleSection = function(button) {
             const targetId = button.getAttribute('data-target');
             const section = document.getElementById(targetId);
@@ -684,12 +772,14 @@
         async function generateAISummary() {
             // ... (AI Summary logic remains the same) ...
             const summaryDiv = document.getElementById('ai-summary-content');
-            
+           
             // SECURITY CHECK: Must be run on http://localhost:3000, not file://
             if (window.location.protocol === 'file:') {
                  summaryDiv.innerHTML = `<p><strong>Note:</strong> To use the AI Strategy Summary, you MUST run this file 
                  via your secure Node.js server (e.g., <code>http://localhost:3000</code>). 
                  The API endpoint is not accessible from a local <code>file://</code> URL.</p>`;
+                 // Disable copy button in dev mode
+                 document.getElementById('copy-summary-button').disabled = true;
                  return;
             }
 
@@ -717,15 +807,21 @@
                 if (response.status !== 200 || data.error) {
                     summaryDiv.innerHTML = `<p style="color: var(--hide-color);">Error generating summary. Check Node.js console. (Server Status: ${response.status})</p>`;
                     console.error("AI Proxy Error:", data.error || 'Unknown server error.');
+                    // Still disabled on error
+                    document.getElementById('copy-summary-button').disabled = true;
                     return;
                 }
 
                 // Display the clean AI response.
                 summaryDiv.innerHTML = data.summary; 
+                // Enable the copy button after successful summary generation
+                enableCopyButton();
 
             } catch (e) {
                 summaryDiv.innerHTML = `<p style="color: var(--hide-color);">Could not connect to AI server. Ensure <code>node server.js</code> is running on port 3000.</p>`;
                 console.error("Frontend Fetch Error:", e);
+                // Still disabled on connection error
+                document.getElementById('copy-summary-button').disabled = true;
             }
         }
         // --- END AI SUMMARY FUNCTION ---
@@ -738,7 +834,7 @@
             const fetchEditorialPromises = EDITORIAL_FEEDS.map(feed => fetchAndRenderFeed(feed.url, feed.id, feed.source, false));
             // Await the main editorial feeds to ensure content is present for the AI
             await Promise.all(fetchEditorialPromises);
-            
+           
             // IMPORTANT: Trigger AI Summary after the main editorial feeds are loaded
             // We use a slight delay just to ensure the DOM has settled after all rendering.
             setTimeout(generateAISummary, 500); 
@@ -746,7 +842,7 @@
             // Reddit Feeds setup (can run in parallel or after summary trigger)
             const communityContainer = document.getElementById('community-pulse-container');
             let communityGridHTML = '';
-            
+           
             for (const feed of REDDIT_FEEDS) {
                 const subredditId = feed.id.split('/')[1];
                 communityGridHTML += `<div class="reddit-subsection">
@@ -765,7 +861,7 @@
         async function fetchAndRenderFeed(feedUrl, containerId, sourceName, isReddit) {
             const sectionDiv = document.getElementById(containerId);
             const gridContainer = sectionDiv.querySelector('.news-grid') || document.getElementById(containerId);
-            
+           
             try {
                 const proxyUrl = `${RSS_TO_JSON_PROXY_BASE}${encodeURIComponent(feedUrl)}`;
                 const response = await fetch(proxyUrl);
@@ -778,7 +874,7 @@
                 if (gridContainer.textContent.includes('Loading')) {
                     gridContainer.innerHTML = ''; 
                 }
-                
+               
                 data.items.slice(0, 10).forEach(item => {
                     const card = createNewsCard(item, sourceName, isReddit);
                     if (card) { 
@@ -793,7 +889,7 @@
                 }
             }
         }
-        
+       
         /**
          * Checks if the title or description contains any blacklisted keyword.
          * @param {string} title 
@@ -810,73 +906,63 @@
             if (HIDDEN_LINKS.has(item.link)) {
                 return null; 
             }
-            
+           
             const card = document.createElement('div');
             card.className = 'news-card';
-            
+           
+            // ... (rest of the createNewsCard function continues here)
+            // Original code cut-off point:
             const pubDate = new Date(item.pubDate).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric', year: 'numeric'
-            });
 
+            // ... (rest of the function's logic)
+            const title = item.title || 'No Title';
+            let description = item.description || item.content || '';
+            const link = item.link || '#';
+            const date = new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            // Clean description for search/display (remove HTML/CDATA)
             const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = item.description || item.content || 'Click link for details.';
-            
-            let descriptionText = tempDiv.querySelector('p') 
-                ? tempDiv.querySelector('p').textContent.trim()
-                : tempDiv.textContent.trim();
-            
-            if (descriptionText.length > 180) {
-                descriptionText = descriptionText.substring(0, 177) + '...';
-            }
-            
-            let cleanTitle = item.title;
-            if (isReddit) {
-                cleanTitle = item.title.replace(/^(.*?):\s*/, '').trim();
-            }
+            tempDiv.innerHTML = description;
+            let cleanDescription = tempDiv.textContent || tempDiv.innerText || '';
+            cleanDescription = cleanDescription.replace(/(\r\n|\n|\r)/gm, " ").substring(0, 150) + (cleanDescription.length > 150 ? '...' : '');
 
-            // --- BLACKLIST CHECK ---
-            if (isAutoFiltered(cleanTitle, descriptionText)) {
+            let isAuto = isAutoFiltered(title, cleanDescription);
+            if (isAuto) {
                 card.classList.add('auto-filtered');
             }
-            // --- END BLACKLIST CHECK ---
 
-            // We must add data- attributes for the server to scrape successfully!
-            card.setAttribute('data-search-title', cleanTitle.toLowerCase());
-            card.setAttribute('data-search-desc', descriptionText.toLowerCase());
+            // Set data attributes for search
+            card.setAttribute('data-search-title', title.toLowerCase());
+            card.setAttribute('data-search-desc', cleanDescription.toLowerCase());
 
+            // Build card HTML
             card.innerHTML = `
                 <div class="card-controls grid-controls">
-                    <span class="news-source">Source: ${sourceName}</span>
-                    <button onclick="hideTileForever(this, '${item.link}')">Hide Forever</button>
+                    <span>${sourceName}</span>
+                    <button onclick="hideTileForever(this, '${link}')">Hide Forever</button>
                 </div>
-                <div>
-                    <h4><a href="${item.link}" target="_blank" rel="noopener noreferrer">${cleanTitle}</a></h4>
-                    <p class="description">${descriptionText}</p>
-                </div>
-                
+                <h4><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></h4>
+                <p class="description">${cleanDescription}</p>
                 <div class="date-and-controls">
-                    <p class="date">Published: ${pubDate}</p>
+                    <span class="date">${date}</span>
                     <div class="card-controls list-controls">
-                        <button onclick="hideTileForever(this, '${item.link}')">Hide</button>
+                         <span>${sourceName}</span>
+                         <button onclick="hideTileForever(this, '${link}')">Hide Forever</button>
                     </div>
                 </div>
             `;
+            
             return card;
         }
 
-
-        // --- Initialize Dashboard ---
-        
-        // 1. Load persistence and preferences
-        loadHiddenLinks();
-        loadViewPreference(); 
-        loadThemePreference();
-        loadFilterBarPreference(); // NEW: Load filter bar visibility preference
-
-        // 2. Setup controls (no need to call setupControls() as listeners are inline or simpler now)
-
-        // 3. Fetch and render all defined feeds and trigger AI summary
-        fetchAndRenderAllFeeds();
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadThemePreference(); // Must run first to set initial theme and button label
+            loadViewPreference(); 
+            loadFilterBarPreference();
+            loadHiddenLinks();
+            fetchAndRenderAllFeeds();
+        });
     </script>
 </body>
 </html>
