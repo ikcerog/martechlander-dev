@@ -21,9 +21,8 @@ const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000;
 // --- ANTHROPIC CONFIGURATION ---
 const apiKey = process.env.CLAUDE_API_KEY; 
 
-// FIX: Using the correct resilient model alias for the Sonnet family.
-// This alias, 'claude-sonnet', should point to the latest, currently supported Sonnet model.
-const CLAUDE_MODEL = "claude-sonnet"; 
+// FIX: Using the currently valid, specific model ID, as the alias 'claude-sonnet' is returning 404.
+const CLAUDE_MODEL = "claude-3-5-sonnet"; 
 const API_URL = "https://api.anthropic.com/v1/messages";
 
 if (!apiKey) {
@@ -189,7 +188,7 @@ app.post('/api/summarize-news', async (req, res) => {
         `;
 
         try {
-            console.log(`Making API call to Claude (Alias: ${CLAUDE_MODEL})...`);
+            console.log(`Making API call to Claude (ID: ${CLAUDE_MODEL})...`);
             
             const response = await fetch(API_URL, {
                 method: 'POST',
