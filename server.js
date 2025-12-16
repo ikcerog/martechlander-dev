@@ -19,9 +19,10 @@ const THROTTLE_MINUTES = 91;
 const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; 
 
 // --- ANTHROPIC CONFIGURATION ---
-const apiKey = process.env.CLAUDE_API_KEY; 
+// FIX: Ensure the API key is read and any accidental whitespace is trimmed
+const apiKey = process.env.CLAUDE_API_KEY ? process.env.CLAUDE_API_KEY.trim() : null; 
 
-// FIX: Using the currently valid, specific model ID, as the alias 'claude-sonnet' is returning 404.
+// Using the currently valid, specific model ID, as aliases were failing.
 const CLAUDE_MODEL = "claude-3-5-sonnet"; 
 const API_URL = "https://api.anthropic.com/v1/messages";
 
@@ -149,6 +150,7 @@ app.post('/api/summarize-news', async (req, res) => {
         if (!htmlContent) {
             return res.status(400).json({ error: 'Missing HTML content in request body.' });
         }
+        // This check will now use the trimmed key
         if (!apiKey) {
             return res.status(500).json({ error: 'CLAUDE_API_KEY environment variable is not set.' });
         }
@@ -193,6 +195,7 @@ app.post('/api/summarize-news', async (req, res) => {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
+                    // The trimmed API key is used here
                     'x-api-key': apiKey,
                     'anthropic-version': '2023-06-01', // Required API version
                     'content-type': 'application/json'
@@ -234,6 +237,7 @@ app.post('/api/summarize-news', async (req, res) => {
 
         } catch (error) {
             console.error("Claude API Error:", error.message);
+            // This catches any remaining errors, including network/timeout issues
             return res.status(500).json({ error: `Failed to generate AI summary: ${error.message}` });
         }
     }
