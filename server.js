@@ -3,8 +3,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-// const fs = require('fs/promises'); // REMOVED: No longer needed for local file caching
+// const fs = require('fs/promises'); // REMOVED: No longer used for local file caching
 const { GoogleGenAI } = require("@google/genai");
+
 // --- NEW: Caching Dependency ---
 const Redis = require('ioredis'); 
 // -------------------------------
@@ -15,22 +16,37 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// --- NEW: Redis Client Connection ---
-// Render automatically provides a REDIS_URL for your Redis instance
-const redisClient = new Redis(process.env.REDIS_URL); 
-
-redisClient.on('connect', () => console.log('Redis Client Connected Successfully.'));
-redisClient.on('error', (err) => console.error('Redis Client Error:', err));
-// ------------------------------------
-
 // Caching and Throttling Configuration
-// const CACHE_FILE = 'summary_cache.txt'; // REMOVED: Replaced by Redis key
 const CACHE_KEY_SUMMARY = 'latest_strategic_summary';
 const CACHE_KEY_TIMESTAMP = 'latest_strategic_timestamp';
 
 const THROTTLE_MINUTES = 91;
 const THROTTLE_SECONDS = THROTTLE_MINUTES * 60; // 91 minutes in seconds (for Redis TTL)
-const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; // 91 minutes in milliseconds (for time comparisons)
+const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; // 91 minutes in milliseconds
+
+// --- NEW: Redis Client Connection and Safety Check ---
+const redisUrl = process.env.REDIS_URL;
+let redisClient = null; // Initialize as null
+
+if (redisUrl) {
+    try {
+        // Initialize the client only if the URL is present
+        redisClient = new Redis(redisUrl); 
+
+        redisClient.on('connect', () => console.log('Redis Client Connected Successfully.'));
+        // Defensive error handler to prevent crashing, allowing the app to run without cache
+        redisClient.on('error', (err) => {
+            console.error('Redis Client Error: Caching disabled.', err.message);
+            // Optionally, set client to null here if the error is terminal
+        });
+    } catch (e) {
+        console.error('Failed to initialize Redis client:', e.message);
+        redisClient = null;
+    }
+} else {
+    console.warn('REDIS_URL environment variable is missing. Caching will use non-persistent memory (local file fallback is gone).');
+}
+// ----------------------------------------------------
 
 // The API key is now explicitly passed to the GoogleGenAI constructor,
 const apiKey = process.env.GEMINI_API_KEY;
@@ -47,12 +63,14 @@ app.use(express.static(path.join(__dirname, 'public')));
  * @returns {Promise<{timestamp: number, summary: string}|null>}
  */
 async function readCache() {
+    // Safety check: If Redis is unavailable, treat it as a cache miss.
+    if (!redisClient) return null; 
+    
     try {
         // Fetch both the timestamp and the summary content from Redis
         const [timestampStr, summary] = await redisClient.mget(CACHE_KEY_TIMESTAMP, CACHE_KEY_SUMMARY);
 
         if (!timestampStr || !summary) {
-            console.log('Redis cache miss or incomplete data.');
             return null;
         }
         
@@ -65,35 +83,33 @@ async function readCache() {
 
         return { timestamp, summary };
     } catch (error) {
-        console.error('Error reading from Redis:', error);
+        console.error('Error reading from Redis:', error.message);
         return null; // Treat any Redis error as a cache miss
     }
 }
 
 /**
  * Writes the new timestamp and summary to Redis with a TTL (Time-To-Live).
- * We set the summary TTL to match the throttle time. The timestamp is just a number.
  * @param {number} timestamp 
  * @param {string} summary 
  * @returns {Promise<void>}
  */
 async function writeCache(timestamp, summary) {
+    // Safety check: If Redis is unavailable, do nothing.
+    if (!redisClient) return; 
+
     try {
-        // Use a multi-set (mset) with transaction (multi) for atomicity if needed, 
-        // but for simplicity, we use two SET commands here.
-        // We set the TTL only on the summary to ensure the timestamp is always current
-        // or we can set the TTL on both to keep them synchronized.
         const timestampStr = timestamp.toString();
 
-        // 1. Store the timestamp (no TTL needed, it's just a number)
-        await redisClient.set(CACHE_KEY_TIMESTAMP, timestampStr);
-        
-        // 2. Store the summary content with an explicit TTL (Time To Live)
-        await redisClient.set(CACHE_KEY_SUMMARY, summary, 'EX', THROTTLE_SECONDS);
+        // Use a transaction (multi/exec) to ensure both keys are set together
+        await redisClient.multi()
+            .set(CACHE_KEY_TIMESTAMP, timestampStr)
+            .set(CACHE_KEY_SUMMARY, summary, 'EX', THROTTLE_SECONDS)
+            .exec();
         
         console.log(`New summary cached in Redis for ${THROTTLE_MINUTES} minutes.`);
     } catch (error) {
-        console.error('Error writing to Redis:', error);
+        console.error('Error writing to Redis:', error.message);
     }
 }
 
@@ -198,6 +214,7 @@ app.post('/api/summarize-news', async (req, res) => {
         `;
         
         try {
+            console.log('Generating summary via Gemini API...');
             const response = await ai.models.generateContent({
                 model: modelName,
                 contents: inputPrompt,
@@ -221,7 +238,7 @@ app.post('/api/summarize-news', async (req, res) => {
 
         } catch (error) {
             console.error("Gemini API Error:", error);
-            // Include Redis errors here as well
+            // Handle API call failure
             return res.status(500).json({ error: 'Failed to generate AI summary. Check server logs.' });
         }
     }
