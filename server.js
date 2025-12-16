@@ -3,8 +3,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const fs = require('fs/promises'); // Use promises version of fs for async/await
-// For making the HTTPS request to Anthropic. Added logic to ensure 'fetch' is the callable function.
+const fs = require('fs/promises'); 
+// For making the HTTPS request to Anthropic. Handles potential Node module exports.
 const fetch = require('node-fetch').default || require('node-fetch'); 
 
 // Load environment variables locally (Render ignores this but it's good for local testing)
@@ -16,14 +16,14 @@ const port = process.env.PORT || 3000;
 // Caching and Throttling Configuration
 const CACHE_FILE = 'summary_cache.txt';
 const THROTTLE_MINUTES = 91;
-const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; // 91 minutes in milliseconds
+const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; 
 
 // --- ANTHROPIC CONFIGURATION ---
-// IMPORTANT: Uses CLAUDE_API_KEY from environment
 const apiKey = process.env.CLAUDE_API_KEY; 
 
-// FIX: Using the resilient model alias. This will point to the latest Sonnet model (e.g., 3.5 Sonnet, or newer).
-const CLAUDE_MODEL = "claude-3-sonnet"; 
+// FIX: Using the correct resilient model alias for the Sonnet family.
+// This alias, 'claude-sonnet', should point to the latest, currently supported Sonnet model.
+const CLAUDE_MODEL = "claude-sonnet"; 
 const API_URL = "https://api.anthropic.com/v1/messages";
 
 if (!apiKey) {
@@ -106,7 +106,6 @@ function formatTimestamp(msTimestamp) {
 
 // 1. Serve the main HTML file
 app.get('/', (req, res) => {
-    // __dirname is the current directory of server.js
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
