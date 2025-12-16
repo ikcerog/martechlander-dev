@@ -3,8 +3,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const fs = require('fs/promises'); // Keep: Use promises version of fs for async/await
-const fetch = require('node-fetch'); // NEW: For making the HTTPS request to Anthropic
+const fs = require('fs/promises'); // Use promises version of fs for async/await
+// For making the HTTPS request to Anthropic. Added logic to ensure 'fetch' is the callable function.
+const fetch = require('node-fetch').default || require('node-fetch'); 
 
 // Load environment variables locally (Render ignores this but it's good for local testing)
 require('dotenv').config(); 
@@ -12,15 +13,17 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Caching and Throttling Configuration - KEPT
+// Caching and Throttling Configuration
 const CACHE_FILE = 'summary_cache.txt';
 const THROTTLE_MINUTES = 91;
 const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000; // 91 minutes in milliseconds
 
-// --- ANTHROPIC CONFIGURATION --- (Replaced Gemini config)
+// --- ANTHROPIC CONFIGURATION ---
 // IMPORTANT: Uses CLAUDE_API_KEY from environment
 const apiKey = process.env.CLAUDE_API_KEY; 
-const CLAUDE_MODEL = "claude-3-5-sonnet"; 
+
+// FIX: Using the resilient model alias. This will point to the latest Sonnet model (e.g., 3.5 Sonnet, or newer).
+const CLAUDE_MODEL = "claude-3-sonnet"; 
 const API_URL = "https://api.anthropic.com/v1/messages";
 
 if (!apiKey) {
@@ -35,7 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 /**
- * Reads the cache file and returns the timestamp and summary. - KEPT
+ * Reads the cache file and returns the timestamp and summary.
  * @returns {Promise<{timestamp: number, summary: string}|null>}
  */
 async function readCache() {
@@ -67,7 +70,7 @@ async function readCache() {
 }
 
 /**
- * Writes the new timestamp and summary to the cache file. - KEPT
+ * Writes the new timestamp and summary to the cache file.
  * @param {number} timestamp 
  * @param {string} summary 
  * @returns {Promise<void>}
@@ -82,7 +85,7 @@ async function writeCache(timestamp, summary) {
 }
 
 /**
- * Formats a timestamp into a readable date/time string, forcing EST/EDT. - KEPT
+ * Formats a timestamp into a readable date/time string, forcing EST/EDT.
  * @param {number} msTimestamp 
  * @returns {string}
  */
@@ -101,7 +104,7 @@ function formatTimestamp(msTimestamp) {
 }
 
 
-// 1. Serve the main HTML file - KEPT
+// 1. Serve the main HTML file
 app.get('/', (req, res) => {
     // __dirname is the current directory of server.js
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -120,7 +123,7 @@ app.post('/api/summarize-news', async (req, res) => {
         const timeElapsed = currentTime - cachedData.timestamp;
 
         if (timeElapsed < THROTTLE_MILLISECONDS) {
-            // --- THROTTLED: RETURN CACHED SUMMARY --- (Logic KEPT)
+            // --- THROTTLED: RETURN CACHED SUMMARY ---
             const timeRemaining = THROTTLE_MILLISECONDS - timeElapsed;
             const nextRunTime = cachedData.timestamp + THROTTLE_MILLISECONDS;
 
@@ -135,11 +138,11 @@ app.post('/api/summarize-news', async (req, res) => {
             summaryToReturn = cachedData.summary; // Return CLEAN summary
 
         } else {
-            // --- THROTTLING WINDOW EXPIRED: GENERATE NEW SUMMARY --- (Logic KEPT)
+            // --- THROTTLING WINDOW EXPIRED: GENERATE NEW SUMMARY ---
             console.log('Throttle window expired. Calling Claude API...');
         }
     } else {
-        // --- NO CACHE FILE: GENERATE NEW SUMMARY (First Run) --- (Logic KEPT)
+        // --- NO CACHE FILE: GENERATE NEW SUMMARY (First Run) ---
         console.log('No cache file found. Calling Claude API for the first time...');
     }
     
@@ -153,7 +156,7 @@ app.post('/api/summarize-news', async (req, res) => {
         }
 
 
-        // --- ANTHROPIC API CALL LOGIC (Replaced Gemini SDK Call) ---
+        // --- ANTHROPIC API CALL LOGIC ---
         const systemPrompt = `
             You are a senior strategic analyst specializing in AdTech, Marketing, and Enterprise Technology.
             Analyze the following HTML content, which contains recent news articles from various industry feeds.
@@ -187,7 +190,7 @@ app.post('/api/summarize-news', async (req, res) => {
         `;
 
         try {
-            console.log(`Making API call to Claude 3.5 Sonnet...`);
+            console.log(`Making API call to Claude (Alias: ${CLAUDE_MODEL})...`);
             
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -198,7 +201,7 @@ app.post('/api/summarize-news', async (req, res) => {
                 },
                 body: JSON.stringify({
                     model: CLAUDE_MODEL,
-                    max_tokens: 4096, // A high, safe output limit for the summary
+                    max_tokens: 4096,
                     system: systemPrompt, 
                     messages: [
                         { "role": "user", "content": userContent }
@@ -218,7 +221,7 @@ app.post('/api/summarize-news', async (req, res) => {
             const newSummary = data.content?.[0]?.text || "Error: Could not extract summary text from Claude response.";
             const newTimestamp = Date.now();
             
-            // Save the new summary and timestamp to the cache - KEPT
+            // Save the new summary and timestamp to the cache
             await writeCache(newTimestamp, newSummary);
 
             // Construct the header for the *new* summary output
@@ -237,7 +240,7 @@ app.post('/api/summarize-news', async (req, res) => {
         }
     }
     
-    // Return two separate fields: the status header and the clean summary content. - KEPT
+    // Return two separate fields: the status header and the clean summary content.
     res.json({ 
         header: headerToReturn,
         summary: summaryToReturn 
@@ -245,7 +248,7 @@ app.post('/api/summarize-news', async (req, res) => {
 });
 
 
-// Start the server - KEPT
+// Start the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
