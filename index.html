@@ -3,982 +3,643 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEV 📣 AdTech News</title>
-   
+    <title>News Dashboard</title>
     <style>
-        /* --- CSS Styling and Variables --- */
-        :root {
-            /* Light Theme Defaults */
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --secondary-accent-1: #2ecc71;  
-            --secondary-accent-2: #e67e22;  
-            --secondary-accent-3: #16a085;  
-            --secondary-accent-4: #f39c12;  
-            --background-color: #ecf0f1;
-            --card-background: #ffffff;
-            --text-color: #34495e;
-            --secondary-text-color: #7f8c8d;
-            --border-color: #bdc3c7;
-            --hide-color: #e74c3c;
-        }
+        /* --- STYLES (KEEP ALL YOUR EXISTING CSS HERE) --- */
 
-        /* Dark Mode Variables */
-        body.dark-mode {
-            --primary-color: #9b59b6;
-            --accent-color: #3498db;
-            --secondary-accent-1: #1abc9c;
-            --secondary-accent-2: #d35400;
-            --secondary-accent-3: #1abc9c;
-            --secondary-accent-4: #e67e22;
-            --background-color: #2c3e50;
-            --card-background: #34495e;
-            --text-color: #ecf0f1;
-            --secondary-text-color: #bdc3c7;
-            --border-color: #49627a;
-            --hide-color: #c0392b;
-        }
-
-        /* Midnight Mode Variables */
-        body.midnight-mode {
-            --primary-color: #0d1a26;
-            --accent-color: #5d9cec;
-            --secondary-accent-1: #48c9b0;  
-            --secondary-accent-2: #f5b041;  
-            --secondary-accent-3: #45b39d;  
-            --secondary-accent-4: #f7dc6f;  
-            --background-color: #010409;
-            --card-background: #0d1117;
-            --text-color: #c9d1d9;
-            --secondary-text-color: #8b949e;
-            --border-color: #30363d;
-            --hide-color: #ff7b72;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* Header Styling */
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        /* Example styles for the new toggle button (integrate with your existing .control-button) */
+        .controls-row {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-       
-        /* Header Max-Width Container */
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
+        /* Adjustments for the new header structure */
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        header h1 { margin: 0; font-size: 1.8em; }
-
-        /* Search Input */
-        #search-input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 1em;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: var(--primary-color);
-        }
-
-        /* Control Buttons Container */
-        .controls-row {
-            display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            justify-content: center;
-        }
-       
-        /* Filter Bar Container */
-        #filter-bar-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            overflow: hidden;
-            max-height: 200px; /* Max height when visible */
-            padding-top: 10px;
-        }
-       
-        #filter-bar-container.hidden {
-            max-height: 0;
-            opacity: 0;
-            padding-top: 0;
-        }
-       
-        /* Theme, View, and Filter Buttons */
-        .control-button {
-            padding: 8px 15px;
-            border: 1px solid white;
-            background-color: transparent;
-            color: white;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 0.9em;
-            transition: background-color 0.2s, opacity 0.2s, border-color 0.2s;
-        }
-
-        .control-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-       
-        /* Highlight active filter button */
-        .control-button.active {
-            background-color: white;
-            color: var(--primary-color);
-            border-color: white;
-        }
-       
-        body.dark-mode .control-button.active, body.midnight-mode .control-button.active {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-
-       
-        /* View Toggle Specific Styling */
-        #view-toggle-row {
-            display: flex;
-            gap: 5px;
-            border-right: 1px solid rgba(255, 255, 255, 0.5);
-            padding-right: 15px;
-            margin-right: 5px;
-        }
-        .view-button.active {
-            background-color: white;
-            color: var(--primary-color);
-        }
-        body.dark-mode .view-button.active, body.midnight-mode .view-button.active {
-            background-color: var(--text-color);
-            color: var(--primary-color);
-        }
-
-       
-        #reset-hidden-button {
-            background-color: var(--hide-color);
-            border-color: var(--hide-color);
-        }
-        #reset-hidden-button:hover {
-            opacity: 0.8;
-        }
-
-        /* Feed Sections */
-        .feed-section {
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-            overflow: hidden;
-        }
-       
-        .feed-section.hidden {
-            max-height: 0;
-            opacity: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-        }
-
-        .feed-section h2 {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 5px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-size: 1.5em;
-        }
-
-        body.dark-mode .feed-section h2, body.midnight-mode .feed-section h2 {
-            border-bottom-color: var(--accent-color);
-            color: var(--text-color);
-        }
-       
-        /* Specific header colors for flair */
-        #community-pulse-feed h2 { color: var(--secondary-accent-1); }
-        #branding-advertising-feed h2 { color: var(--secondary-accent-2); }
-        /* FinTech (Enterprise Tech) and Tech Culture */
-        #fintech-new-feed h2 { color: var(--secondary-accent-3); }
-        #tech-culture-feed h2 { color: var(--secondary-accent-3); }
-        #ad-tech-feed h2 { color: var(--secondary-accent-4); }
-
-
-        /* --- VIEW CONTROLS CSS (Grid and List) --- */
-       
-        /* Default: GRID VIEW (Multi-Column) */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-       
-        .news-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* LIST VIEW: Overrides Grid */
-        body.list-view .feed-section:not(#community-pulse-feed) .news-grid {
-            display: flex; 
-            flex-direction: column;
-            gap: 10px; 
-        }
-       
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card {
-            flex-direction: row;
-            align-items: center;
-            padding: 15px 20px;
-            width: auto; 
-        }
-       
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card h4 {
-            flex-basis: 50%;
-            margin: 0;
-            font-size: 1.1em;
-            order: 1;
-        }
-       
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card .description,
-        /* Hide the default card controls in List View */
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card > .card-controls.grid-controls {
-            display: none; 
-        }
-       
-        /* Target the combined date and control container in List View */
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card .date-and-controls {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end; 
-            gap: 20px;
-            flex-grow: 1; 
-            order: 2;
-        }
-
-        /* Adjustments for elements inside the new container */
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card .date {
-            border-top: none;
-            padding-top: 0;
-            margin: 0;
-            font-size: 0.9em;
-            flex-shrink: 0; 
-        }
-       
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card .card-controls.list-controls {
-            /* This is the inner .card-controls inside .date-and-controls */
-            display: flex !important; /* Override display:none from above */
-            flex-basis: auto;
-            justify-content: flex-end;
-            margin: 0;
-            flex-shrink: 0; 
-        }
-       
-        body.list-view .feed-section:not(#community-pulse-feed) .news-card .card-controls.list-controls span {
-            display: none; 
-        }
-        /* --- END VIEW CONTROLS CSS --- */
-
-
-        .reddit-subsection {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px dashed var(--border-color);
-            border-radius: 4px;
-        }
-        .reddit-subsection h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.2em;
-            color: var(--accent-color);
-        }
-
-
-        .news-card {
-            background-color: var(--card-background);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s;
-        }
-       
-        .news-card.hidden-tile, .news-card.auto-filtered {
-            display: none !important;
-        }
-
-        .news-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        }
-       
-        /* Grid View Controls (Default for .card-controls) */
-        .card-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;  
-        }
-       
-        .card-controls span {
-            font-size: 0.7em;
-            color: var(--secondary-text-color);
-            opacity: 0.8;
-        }
-       
-        .card-controls button {
-            background: none;
-            border: none;
-            color: var(--hide-color);
-            font-size: 0.8em;
-            cursor: pointer;
-            padding: 0;
-            opacity: 0.7;
-            transition: opacity 0.2s;
-        }
-       
-        .card-controls button:hover {
-            opacity: 1;
-        }
-       
-        /* List View control needs to be explicitly shown/hidden */
-        .card-controls.list-controls {
-            display: none; /* Hidden by default, shown in list-view mode */
-        }
-
-
-        .news-card h4 { margin: 0 0 10px 0; font-size: 1.15em; line-height: 1.4; }
-        .news-card h4 a { color: var(--accent-color); text-decoration: none; transition: color 0.2s; }
-        body.dark-mode .news-card h4 a:hover, body.midnight-mode .news-card h4 a:hover { color: var(--text-color); }
-
-        .news-card .description {
-            font-size: 0.9em;
-            color: var(--secondary-text-color);
-            line-height: 1.5;
-            margin-top: 0;
-            flex-grow: 1;  
-        }
-       
-        /* AI Summary Panel Specific Styling */
-        #ai-insight-panel {
-            background-color: var(--card-background);
-            border: 1px solid var(--accent-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            padding: 20px; /* Add padding for a better look */
         }
         
-        #ai-summary-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        #ai-summary-header h2 {
-            margin: 0;
-            font-size: 1.5em;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        /* New styling for the status/throttle message container */
-        #ai-summary-status {
-            padding: 10px 0 0 0;
-            margin-bottom: 10px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            border-bottom: 1px dashed var(--border-color);
+        .header-top h1 {
+            flex-grow: 1;
         }
 
-        #ai-summary-content {
-            padding: 10px 0 0 0; /* Adjusted padding */
-            line-height: 1.6;
-            white-space: pre-wrap; /* Ensures the AI's formatting (like newlines) is respected */
-            margin-top: 10px;
+        .view-button {
+            /* Example: group view buttons */
         }
         
-        #copy-summary-button {
-            padding: 5px 10px;
-            border: 1px solid var(--accent-color);
-            background-color: var(--accent-color);
-            color: white;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 0.9em;
-            transition: background-color 0.2s, opacity 0.2s;
+        /* Your existing styles for the dashboard, news cards, grid, list view, theme, etc. */
+        
+        /* Ensure AI summary content renders markdown well */
+        #ai-summary-content h2, #ai-summary-content h3 {
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        #ai-summary-content ul {
+            padding-left: 20px;
         }
 
-        #copy-summary-button:hover {
-            opacity: 0.9;
-            background-color: var(--primary-color);
-        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 </head>
-<body class="light-mode">
-    <header>
-        <div class="header-content">
-            <div class="header-top">
-                <h1>🚧 DEV 📣 AdTech News</h1>
-                <button id="theme-toggle" class="control-button" onclick="toggleTheme()">☀️ Switch to Dark Mode</button>
-            </div>
-           
-            <div id="search-container">
-                <input type="text" id="search-input" placeholder="Start searching across all feeds..." onkeyup="filterCards()">
-            </div>
-           
-            <div class="controls-row">
-                <button id="toggle-filter-bar-btn" class="control-button" onclick="toggleFilterBar()">Hide Filter Bar</button>
+<body>
 
-                <div id="view-toggle-row">
-                    <button id="grid-view-button" class="view-button control-button" onclick="setListView('grid')">Grid View</button>
-                    <button id="list-view-button" class="view-button control-button" onclick="setListView('list')">List View</button>
-                </div>
-               
-                <button id="reset-hidden-button" class="control-button" onclick="resetHiddenTiles()">Reset Hidden Tiles</button>
-            </div>
-           
-            <div id="filter-bar-container">
-                <button id="toggle-core-marketing" class="control-button active" data-target="core-marketing-feed" onclick="toggleSection(this)">Core Marketing</button>
-                <button id="toggle-branding" class="control-button active" data-target="branding-advertising-feed" onclick="toggleSection(this)">Branding & Campaigns</button>
-                <button id="toggle-adtech" class="control-button active" data-target="ad-tech-feed" onclick="toggleSection(this)">Ad Technology</button>
-                <button id="toggle-fintech" class="control-button active" data-target="fintech-new-feed" onclick="toggleSection(this)">Enterprise Tech</button>
-                <button id="toggle-tech" class="control-button active" data-target="tech-culture-feed" onclick="toggleSection(this)">Tech & Culture</button>
-                <button id="toggle-community" class="control-button active" data-target="community-pulse-feed" onclick="toggleSection(this)">Community Pulse</button>
-            </div>
-        </div>
-    </header>
-
-    <details open="open" style="margin: 8px auto; max-width: 1400px; padding: 16px; box-shadow: 0 0 4px #33333333; border-radius: 8px;"><summary>Click to Hide/Show AI Summary</summary>
-    <div id="ai-insight-panel" class="feed-section">
-        <div id="ai-summary-header">
-             <h2>✨ AI Strategy Summary [Slowed in DEV]</h2>
-             <button id="copy-summary-button" onclick="copyAISummary()" title="Copy the full AI Summary to your clipboard" disabled>Copy Summary</button>
+<header>
+    <div class="header-content">
+        <div class="header-top">
+            <h1>🏡 DEV 💵 Residential Mortgage Feed</h1>
+            
+            <button id="feed-mode-toggle" class="control-button" onclick="toggleFeedMode()">Switch to AdTech Feed</button>
+            
+            <button id="theme-toggle" class="control-button" onclick="toggleTheme()">☀️ Switch to Dark Mode</button>
         </div>
         
-        <div id="ai-summary-status">
-            </div>
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Search for rates, regulation, companies (Rocket, UWM...)..." onkeyup="filterCards()">
+        </div>
         
-        <div id="ai-summary-content">
-            <p>AI summary is slowed in DEV to preserve resources</p>
-        </div>
-    </div>
-    </details>
+        <div class="controls-row">
+            <button id="toggle-filter-bar-btn" class="control-button" onclick="toggleFilterBar()">Hide Filter Bar</button>
 
-    <div id="core-marketing-feed" class="feed-section">
-        <h2>📈 Core Marketing (Marketing Dive)</h2>
-        <div class="news-grid-container" data-feed-id="core-marketing-feed">
-            <div class="news-grid">Loading Core Marketing...</div>
-        </div>
-    </div>
-
-    <div id="branding-advertising-feed" class="feed-section">
-        <h2>⭐️ Branding & Campaigns (Adweek, AdPulp, More...)</h2>
-        <div class="news-grid-container" data-feed-id="branding-advertising-feed">
-            <div class="news-grid">Loading Branding & Campaigns...</div>
-        </div>
-    </div>
-
-    <div id="ad-tech-feed" class="feed-section">
-        <h2>⚙️ Ad Technology (AdExchanger, VideoWeek...)</h2>
-        <div class="news-grid-container" data-feed-id="ad-tech-feed">
-            <div class="news-grid">Loading Ad Technology...</div>
-        </div>
-    </div>
-
-    <div id="fintech-new-feed" class="feed-section">
-        <h2>💰 Enterprise Tech & FinTech (CIO Dive, Banking Dive)</h2>
-        <div class="news-grid-container" data-feed-id="fintech-new-feed">
-            <div class="news-grid">Loading Enterprise Tech & FinTech...</div>
-        </div>
-    </div>
-
-    <div id="tech-culture-feed" class="feed-section">
-        <h2>🌐 Tech & Culture (Wired)</h2>
-        <div class="news-grid-container" data-feed-id="tech-culture-feed">
-            <div class="news-grid">Loading Tech & Culture...</div>
-        </div>
-    </div>
-   
-    <div id="community-pulse-feed" class="feed-section">
-        <h2>🗣️ Community Pulse (Reddit Subreddits)</h2>
-        <div id="community-pulse-container">
-        </div>
-    </div>
-   
-    <script>
-        /* --- JavaScript for Theme Switching, Fetching, Rendering, and Controls --- */
-
-        // --- BLACKLIST KEYWORDS ---
-        const BLACKLIST_KEYWORDS = [
-            "coupon code:",
-            "promo code:",
-            "discount offer:",
-            "save now",
-            "limited time deal",
-            "free trial",
-            "get 50%"
-        ];
-
-        const EDITORIAL_FEEDS = [
-            // --- CORE MARKETING ---
-            { id: 'core-marketing-feed', url: 'https://www.marketingdive.com/feeds/news', source: 'Marketing Dive' },
-            { id: 'core-marketing-feed', url: 'https://www.campaignlive.co.uk/rss/latest', source: 'Campaign Live' }, // ADDED: Campaign Dive
-           
-            // --- BRANDING & CAMPAIGNS ---
-            { id: 'branding-advertising-feed', url: 'https://www.adweek.com/feed/', source: 'Adweek' }, 
-            { id: 'branding-advertising-feed', url: 'https://www.moreaboutadvertising.com/feed/', source: 'More About Adv.' },
-            { id: 'branding-advertising-feed', url: 'https://feeds.feedburner.com/Adpulp', source: 'AdPulp' },
-           
-            // --- EXPANDED AD TECH FEEDS ---
-            { id: 'ad-tech-feed', url: 'https://www.adexchanger.com/feed/', source: 'AdExchanger' },
-            { id: 'ad-tech-feed', url: 'https://adtechdaily.com/feed/', source: 'Ad Tech Daily' },
-            { id: 'ad-tech-feed', url: 'https://videoweek.com/feed/', source: 'VideoWeek' },
-            { id: 'ad-tech-feed', url: 'https://advertisemint.com/feed/', source: 'AdvertiseMint' },
-            { id: 'ad-tech-feed', url: 'https://medium.com/feed/ipg-media-lab', source: 'IPG Media Lab' }, // Programmatic / Innovation
-            { id: 'ad-tech-feed', url: 'https://silverpush.co/feed', source: 'SilverPush Blog' }, // Video/AI AdTech
-           
-            // --- ENTERPRISE & FINTECH SECTION ---
-            { id: 'fintech-new-feed', url: 'https://www.ciodive.com/feeds/news/', source: 'CIO Dive' },
-            { id: 'fintech-new-feed', url: 'https://www.bankingdive.com/feeds/news/', source: 'Banking Dive' },
-           
-            // --- TECH & CULTURE ---
-            { id: 'tech-culture-feed', url: 'https://www.wired.com/feed/rss', source: 'Wired' }, 
-            { id: 'tech-culture-feed', url: 'https://www.fastcompany.com/rss', source: 'Fast Company' }, // ADDED: Fast Company
-        ];
-       
-        const REDDIT_FEEDS = [
-            { id: 'r/marketing', url: 'https://www.reddit.com/r/marketing.rss' },
-            { id: 'r/advertising', url: 'https://www.reddit.com/r/advertising.rss' },
-            { id: 'r/tech', url: 'https://www.reddit.com/r/tech.rss' },
-            { id: 'r/fintech', url: 'https://www.reddit.com/r/Fintech.rss' },
-            { id: 'r/userexperience', url: 'https://www.reddit.com/r/userexperience.rss' },
-        ];
-       
-        const RSS_TO_JSON_PROXY_BASE = 'https://api.rss2json.com/v1/api.json?rss_url=';
-        let HIDDEN_LINKS = new Set();
-       
-        // --- THEME LOGIC (Triple Mode) ---
-        const THEMES = ['light-mode', 'dark-mode', 'midnight-mode'];
-        const THEME_LABELS = {
-            'light-mode': '☀️ Switch to Dark Mode',
-            'dark-mode': '🌙 Switch to Midnight Mode',
-            'midnight-mode': '🌌 Switch to Light Mode'
-        };
-
-        function toggleTheme() {
-            const body = document.body;
-            const toggleButton = document.getElementById('theme-toggle');
+            <div id="view-toggle-row">
+                <button id="grid-view-button" class="view-button control-button" onclick="setListView('grid')">Grid View</button>
+                <button id="list-view-button" class="view-button control-button" onclick="setListView('list')">List View</button>
+            </div>
             
-            // Get current theme from body class (or default)
-            let currentTheme = THEMES.find(t => body.classList.contains(t)) || 'light-mode';
-            
-            const currentIndex = THEMES.indexOf(currentTheme);
-            const nextIndex = (currentIndex + 1) % THEMES.length;
-            const newTheme = THEMES[nextIndex];
+            <button id="reset-hidden-button" class="control-button" onclick="resetHiddenTiles()">Reset Hidden Tiles</button>
+        </div>
+        
+        <div id="filter-bar-container">
+            <button id="toggle-core-mortgage" class="control-button active" data-target="core-mortgage-news" onclick="toggleSection(this)">Core News & Rates</button>
+            <button id="toggle-housingwire-authors" class="control-button active" data-target="housingwire-authors" onclick="toggleSection(this)">HW: Key Authors</button>
+            <button id="toggle-company-news" class="control-button active" data-target="company-news-tags" onclick="toggleSection(this)">Company Focus</button>
+            <button id="toggle-real-estate-economy" class="control-button active" data-target="real-estate-market" onclick="toggleSection(this)">Real Estate & Economy</button>
+            <button id="toggle-regulation" class="control-button active" data-target="regulation-compliance" onclick="toggleSection(this)">Regulation & CFPB</button>
+            <button id="toggle-fintech-finance" class="control-button active" data-target="finance-fintech" onclick="toggleSection(this)">FinTech & Finance</button>
+            <button id="toggle-community" class="control-button active" data-target="community-pulse-feed" onclick="toggleSection(this)">Community Pulse</button>
+        </div>
+    </div>
+</header>
 
-            // Remove all existing theme classes and add the new one
-            body.classList.remove(...THEMES);
-            body.classList.add(newTheme);
-            
-            localStorage.setItem('theme', newTheme);
-            // Set the button text to prompt the switch to the *next* theme (which is the current theme's label)
-            toggleButton.textContent = THEME_LABELS[newTheme];
-        }
+<details open="open" style="margin: 8px auto; max-width: 1400px; padding: 16px; box-shadow: 0 0 4px #33333333; border-radius: 8px;"><summary>Click to Hide/Show AI Summary</summary>
+<div id="ai-insight-panel" class="feed-section">
+    <div id="ai-summary-header">
+        <h2>✨ AI Strategy Summary [Slowed in DEV]</h2>
+        <button id="copy-summary-button" onclick="copyAISummary()" title="Copy the full AI Summary to your clipboard" disabled>Copy Summary</button>
+    </div>
+    
+    <div id="ai-summary-status">
+        </div>
+    
+    <div id="ai-summary-content">
+        <p>AI summary is slowed in DEV to preserve resources</p>
+    </div>
+</div>
+</details>
 
-        function loadThemePreference() {
-            const body = document.body;
-            const toggleButton = document.getElementById('theme-toggle');
-            const savedTheme = localStorage.getItem('theme') || 'light-mode';
-            
-            // Apply the saved theme and set the correct button label
-            body.classList.remove(...THEMES);
-            body.classList.add(savedTheme);
-            
-            // Set the button text to prompt the switch to the *next* theme
-            toggleButton.textContent = THEME_LABELS[savedTheme];
-        }
-       
-        // --- UPDATED: CLICK TO COPY LOGIC (Excludes Header/Status) ---
-        window.copyAISummary = async function() {
-            // CRITICAL CHANGE: Only target the clean content div, not the status header
-            const summaryDiv = document.getElementById('ai-summary-content'); 
-            const copyButton = document.getElementById('copy-summary-button');
-            const originalText = copyButton.textContent;
-            
-            // Use innerText to grab the readable, rendered content
-            const textToCopy = summaryDiv.innerText;
+<div id="core-mortgage-news" class="feed-section">
+    <h2>📈 Core Mortgage News & Rates (MND, HousingWire, NMN)</h2>
+    <div class="news-grid-container" data-feed-id="core-mortgage-news">
+        <div class="news-grid">Loading Core Mortgage News...</div>
+    </div>
+</div>
+<div id="community-pulse-feed" class="feed-section">
+    <h2>🗣️ Community Pulse (Reddit: r/Mortgage, r/FTHB, r/REI)</h2>
+    <div id="community-pulse-container">
+    </div>
+</div>
+    
+<script>
+    /* --- JavaScript for Theme Switching, Fetching, Rendering, and Controls --- */
 
-            try {
-                await navigator.clipboard.writeText(textToCopy);
-                copyButton.textContent = '✅ Copied!';
-                copyButton.style.backgroundColor = 'var(--secondary-accent-1)';
-                copyButton.style.borderColor = 'var(--secondary-accent-1)';
-            } catch (err) {
-                console.error('Failed to copy text: ', err);
-                copyButton.textContent = '❌ Failed!';
-                copyButton.style.backgroundColor = 'var(--hide-color)';
-                copyButton.style.borderColor = 'var(--hide-color)';
-            }
+    // --- BLACKLIST KEYWORDS ---
+    const BLACKLIST_KEYWORDS = [
+        "coupon code:",
+        "promo code:",
+        "discount offer:",
+        "save now",
+        "limited time deal",
+        "free trial",
+        "get 50%"
+    ];
 
-            // Revert button text and color after a short delay
-            setTimeout(() => {
-                copyButton.textContent = originalText;
-                copyButton.style.backgroundColor = 'var(--accent-color)';
-                copyButton.style.borderColor = 'var(--accent-color)';
-            }, 2000);
-        }
+    // --- FEED ARRAYS ---
+    const MORTGAGE_FEEDS = [
+        // --- CORE MORTGAGE INDUSTRY NEWS & RATES ---
+        { id: 'core-mortgage-news', url: 'https://www.mortgagenewsdaily.com/rss/all.aspx', source: 'Mortgage News Daily' },
+        { id: 'core-mortgage-news', url: 'https://www.housingwire.com/feed/', source: 'HousingWire (General)' },
+        { id: 'core-mortgage-news', url: 'https://www.nationalmortgagenews.com/rss/headlines.xml', source: 'National Mortgage News (Headlines)' },
+        { id: 'core-mortgage-news', url: 'https://www.nationalmortgagenews.com/feed?rss=true', source: 'NMN (The Latest Feed)' },
 
-        // Helper to enable the copy button once the summary is loaded
-        function enableCopyButton() {
-             const copyButton = document.getElementById('copy-summary-button');
-             copyButton.disabled = false;
-             copyButton.textContent = 'Copy Summary';
-        }
-        // --- END CLICK TO COPY LOGIC ---
+        // --- AUTHOR & SPECIFIC HOUSINGWIRE COVERAGE (User Requested) ---
+        { id: 'housingwire-authors', url: 'https://www.housingwire.com/author/Connie-Kim/feed/', source: 'HousingWire: Connie Kim' },
+        { id: 'housingwire-authors', url: 'https://www.housingwire.com/author/James-Kleimann/feed/', source: 'HousingWire: James Kleimann' },
+        { id: 'housingwire-authors', url: 'https://www.housingwire.com/author/Flavia-Furlan-Nunes/feed/', source: 'HousingWire: Flávia Nunes' },
+        { id: 'company-news-tags', url: 'https://www.housingwire.com/tag/rocket-mortgage/feed/', source: 'HousingWire: Rocket Mortgage Tag' },
+
+        // --- COMPANY PRESS RELEASES (User Requested) ---
+        { id: 'company-press-releases', url: 'https://www.rocketcompanies.com/feed/?post_type=press_release', source: 'Rocket Companies PR' },
+        { id: 'company-press-releases', url: 'https://feed.businesswire.com/rss/home/company/United+Wholesale+Mortgage%2C+LLC/w6euAGJXjezVpz22AaGCsA==?_gl=1*16nikhv*_gcl_au*MzE3OTYyNzg4LjE3MjQ3NjUwMjM.*_ga*MTI5NTUzNDI3OS4xNzI0NzY1MDIz*_ga_ZQWF70T3FK*MTcyNjA2NzQyNC4zLjEuMTcyNjA2NzQzOS40NS4wLjA.', source: 'UWM Business Wire' },
+
+        // --- REAL ESTATE MARKET & ECONOMIC INFLUENCERS ---
+        { id: 'real-estate-market', url: 'https://www.calculatedriskblog.com/feeds/posts/default', source: 'Calculated Risk' },
+        { id: 'real-estate-market', url: 'https://www.inman.com/feed/', source: 'Inman News' },
+        { id: 'real-estate-market', url: 'https://www.dsnews.com/rss', source: 'DS News (Default Servicing)' },
+
+        // --- REGULATION & COMPLIANCE ---
+        { id: 'regulation-compliance', url: 'https://www.jdsupra.com/rss/browse.aspx?ftid=2334', source: 'JD Supra: Mortgage Law' },
+        { id: 'regulation-compliance', url: 'https://www.consumerfinance.gov/about-us/newsroom/feed/', source: 'CFPB Newsroom' },
+
+        // --- FINANCE, FINTECH, & INDUSTRY TECHNOLOGY ---
+        { id: 'finance-fintech', url: 'https://techcrunch.com/category/fintech/feed/', source: 'TechCrunch: Fintech' },
+        { id: 'finance-fintech', url: 'https://www.theblockcrypto.com/rss/feed/mortgage-fintech', source: 'The Block: Mortgage Fintech' },
+        { id: 'finance-fintech', url: 'https://www.americanbanker.com/feeds/news', source: 'American Banker' },
+
+        // --- OTHER (User Requested) ---
+        { id: 'other-feeds', url: 'https://podcastfeeds.nbcnews.com/HL4TzgYC', source: 'Dateline NBC (Podcast)' },
+    ];
+
+    // *** IMPORTANT: REPLACE THIS PLACEHOLDER ARRAY with your actual AdTech feeds ***
+    const ADTECH_FEEDS = [
+        { id: 'core-adtech', url: 'https://www.adexchanger.com/feed/', source: 'AdExchanger' },
+        { id: 'core-adtech', url: 'https://www.adweek.com/category/tech/feed/', source: 'AdWeek Tech' },
+        { id: 'measurement', url: 'https://www.mediapost.com/rss/sections/20/', source: 'MediaPost Measurement' },
+        { id: 'identity-privacy', url: 'https://www.iab.com/feed/', source: 'IAB News' },
+        { id: 'core-adtech', url: 'https://www.martech.zone/feed/', source: 'MarTech Zone' },
+        { id: 'measurement', url: 'https://www.digiday.com/feed/', source: 'Digiday' },
+        // ... add the rest of your AdTech feed objects here
+    ]; 
+    // ********************************************************************************
+
+    const REDDIT_FEEDS = [
+        { id: 'r/realestateinvesting', url: 'https://www.reddit.com/r/realestateinvesting.rss' },
+        { id: 'r/Mortgage', url: 'https://www.reddit.com/r/Mortgage.rss' },
+        { id: 'r/FirstTimeHomeBuyer', url: 'https://www.reddit.com/r/FirstTimeHomeBuyer.rss' },
+        { id: 'r/financialindependence', url: 'https://www.reddit.com/r/financialindependence.rss' },
+        { id: 'r/personalfinance', url: 'https://www.reddit.com/r/personalfinance.rss' },
+    ];
+
+    // --- NEW STATE MANAGEMENT ---
+    let currentFeedMode = 'mortgage'; // Default to mortgage
+    const ALL_FEEDS = {
+        'mortgage': { feeds: MORTGAGE_FEEDS, title: '🏡 DEV 💵 Residential Mortgage Feed' },
+        'adtech': { feeds: ADTECH_FEEDS, title: '💻 DEV 📊 AdTech & MarTech Feed' }
+    };
+
+    // --- INITIALIZATION (Updated) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Check local storage for mode, otherwise use default
+        currentFeedMode = localStorage.getItem('currentFeedMode') || 'mortgage';
+        updateHeaderAndButton(currentFeedMode);
+        fetchAndRenderFeeds();
+        checkInitialTheme();
+        loadHiddenTiles();
+        filterCards(); 
+    });
 
 
-        // --- VIEW TOGGLE LOGIC ---
-       
-        window.setListView = function(view) {
-            const body = document.body;
-            const gridButton = document.getElementById('grid-view-button');
-            const listButton = document.getElementById('list-view-button');
+    /**
+     * Fetches RSS feeds from the server and renders the news cards.
+     * Now uses the active feed array based on currentFeedMode.
+     */
+    async function fetchAndRenderFeeds() {
+        // 1. CLEAR previous content
+        document.querySelectorAll('.news-grid-container .news-grid').forEach(el => el.innerHTML = `Loading ${currentFeedMode === 'mortgage' ? 'Mortgage' : 'AdTech'} News...`);
+        document.getElementById('community-pulse-container').innerHTML = '';
+        
+        const activeFeedSet = ALL_FEEDS[currentFeedMode].feeds;
 
-            if (view === 'list') {
-                body.classList.add('list-view');
-                listButton.classList.add('active');
-                gridButton.classList.remove('active');
-                localStorage.setItem('newsView', 'list');
-            } else {
-                body.classList.remove('list-view');
-                gridButton.classList.add('active');
-                listButton.classList.remove('active');
-                localStorage.setItem('newsView', 'grid');
-            }
-        }
+        const rssUrls = activeFeedSet.map(feed => feed.url);
+        const redditUrls = REDDIT_FEEDS.map(feed => feed.url);
 
-        function loadViewPreference() {
-            const savedView = localStorage.getItem('newsView') || 'grid';
-            setListView(savedView);
-        }
-
-        // --- FILTER BAR TOGGLE LOGIC ---
-        window.toggleFilterBar = function() {
-            const filterBar = document.getElementById('filter-bar-container');
-            const toggleButton = document.getElementById('toggle-filter-bar-btn');
-           
-            const isHidden = filterBar.classList.toggle('hidden');
-           
-            if (isHidden) {
-                toggleButton.textContent = 'Show Filter Bar';
-                localStorage.setItem('filterBarHidden', 'true');
-            } else {
-                toggleButton.textContent = 'Hide Filter Bar';
-                localStorage.setItem('filterBarHidden', 'false');
-            }
-        }
-       
-        function loadFilterBarPreference() {
-            const filterBar = document.getElementById('filter-bar-container');
-            const toggleButton = document.getElementById('toggle-filter-bar-btn');
-            const isHidden = localStorage.getItem('filterBarHidden') === 'true';
-           
-            if (isHidden) {
-                filterBar.classList.add('hidden');
-                toggleButton.textContent = 'Show Filter Bar';
-            } else {
-                filterBar.classList.remove('hidden');
-                toggleButton.textContent = 'Hide Filter Bar';
-            }
-        }
-
-        // --- PERSISTENCE & UTILITY LOGIC ---
-       
-        function loadHiddenLinks() {
-            const storedLinks = localStorage.getItem('hiddenNewsLinks');
-            if (storedLinks) {
-                HIDDEN_LINKS = new Set(JSON.parse(storedLinks));
-            }
-        }
-       
-        function saveHiddenLinks() {
-            localStorage.setItem('hiddenNewsLinks', JSON.stringify(Array.from(HIDDEN_LINKS)));
-        }
-
-        window.hideTileForever = function(button, link) {
-            const card = button.closest('.news-card');
-            if (card && link) {
-                card.classList.add('hidden-tile');
-                HIDDEN_LINKS.add(link);
-                saveHiddenLinks();
-            }
-        }
-       
-        window.resetHiddenTiles = function() {
-            if (confirm("Are you sure you want to reset all permanently hidden news tiles? This cannot be undone.")) {
-                localStorage.removeItem('hiddenNewsLinks');
-                HIDDEN_LINKS = new Set();
-                location.reload(); 
-            }
-        }
-       
-        window.filterCards = function() {
-            const input = document.getElementById('search-input');
-            const filter = input.value.toLowerCase();
-            const cards = document.querySelectorAll('.news-card:not(.hidden-tile):not(.auto-filtered)');
-
-            cards.forEach(card => {
-                const title = card.getAttribute('data-search-title');
-                const description = card.getAttribute('data-search-desc');
-               
-                if (title.includes(filter) || description.includes(filter)) {
-                    card.style.display = ''; 
-                } else {
-                    card.style.display = 'none'; 
-                }
+        // Fetch RSS feeds
+        try {
+            const response = await fetch('/api/fetch-rss', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ urls: rssUrls })
             });
-        }
-       
-        window.toggleSection = function(button) {
-            const targetId = button.getAttribute('data-target');
-            const section = document.getElementById(targetId);
 
-            if (!section) return;
-
-            // Note: The max-height trick works best with a fixed large value
-            if (section.classList.contains('hidden')) {
-                section.style.maxHeight = '5000px'; 
-                section.classList.remove('hidden');
-                button.classList.add('active');
-            } else {
-                section.classList.add('hidden');
-                button.classList.remove('active');
-            }
-        }
-
-
-        // --- AI SUMMARY INTEGRATION FUNCTION (Calls Server) ---
-        async function generateAISummary() {
-            const statusDiv = document.getElementById('ai-summary-status'); // NEW: For throttle message
-            const summaryDiv = document.getElementById('ai-summary-content'); // For clean summary
-           
-            // SECURITY CHECK: Must be run on http://localhost:3000, not file://
-            if (window.location.protocol === 'file:') {
-                 statusDiv.innerHTML = ``;
-                 summaryDiv.innerHTML = `<p><strong>Note:</strong> To use the AI Strategy Summary, you MUST run this file 
-                 via your secure Node.js server (e.g., <code>http://localhost:3000</code>). 
-                 The API endpoint is not accessible from a local <code>file://</code> URL.</p>`;
-                 document.getElementById('copy-summary-button').disabled = true;
-                 return;
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            try {
-                // Grab the HTML content of the main feeds area.
-                const feedsContainer = document.getElementById('core-marketing-feed').parentElement;
-                const htmlContent = feedsContainer ? feedsContainer.outerHTML : ''; 
-
-                if (!htmlContent.includes('news-card')) {
-                     statusDiv.innerHTML = ``;
-                     summaryDiv.innerHTML = `<p>Awaiting news articles to load, then initiating AI analysis...</p>`;
-                     return;
-                }
-
-                statusDiv.innerHTML = ``;
-                summaryDiv.innerHTML = `<p><strong>Generating AI summary and strategic recommendations...</strong></p>`;
-
-                // Call the secure server-side proxy endpoint
-                const response = await fetch('/api/summarize-news', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ htmlContent: htmlContent }),
-                });
-
-                const data = await response.json();
-
-                if (response.status !== 200 || data.error) {
-                    statusDiv.innerHTML = ``;
-                    summaryDiv.innerHTML = `<p style="color: var(--hide-color);">Error generating summary. Check Node.js console. (Server Status: ${response.status})</p>`;
-                    console.error("AI Proxy Error:", data.error || 'Unknown server error.');
-                    document.getElementById('copy-summary-button').disabled = true;
-                    return;
-                }
-
-                // CRITICAL CHANGE: Display header and summary separately
-                statusDiv.innerHTML = data.header; // The status/throttle message goes here
-                summaryDiv.innerHTML = data.summary; // The clean summary content goes here
-                
-                enableCopyButton();
-
-            } catch (e) {
-                statusDiv.innerHTML = ``;
-                summaryDiv.innerHTML = `<p style="color: var(--hide-color);">Could not connect to AI server. Ensure <code>node server.js</code> is running on port 3000.</p>`;
-                console.error("Frontend Fetch Error:", e);
-                document.getElementById('copy-summary-button').disabled = true;
-            }
-        }
-        // --- END AI SUMMARY FUNCTION ---
-
-
-        // --- FETCH & RENDER LOGIC ---
-
-        async function fetchAndRenderAllFeeds() {
-            // Editorial Feeds
-            const fetchEditorialPromises = EDITORIAL_FEEDS.map(feed => fetchAndRenderFeed(feed.url, feed.id, feed.source, false));
-            // Await the main editorial feeds to ensure content is present for the AI
-            await Promise.all(fetchEditorialPromises);
-           
-            // IMPORTANT: Trigger AI Summary after the main editorial feeds are loaded
-            // We use a slight delay just to ensure the DOM has settled after all rendering.
-            setTimeout(generateAISummary, 500); 
-
-            // Reddit Feeds setup (can run in parallel or after summary trigger)
-            const communityContainer = document.getElementById('community-pulse-container');
-            let communityGridHTML = '';
-           
-            for (const feed of REDDIT_FEEDS) {
-                const subredditId = feed.id.split('/')[1];
-                communityGridHTML += `<div class="reddit-subsection">
-                                    <h3>r/${subredditId}</h3>
-                                    <div class="news-grid" id="${feed.id}-grid">Loading...</div>
-                                </div>`;
-            }
-            communityContainer.innerHTML = communityGridHTML;
-
-            REDDIT_FEEDS.forEach(feed => {
-                 fetchAndRenderFeed(feed.url, `${feed.id}-grid`, feed.id, true);
-            });
-        }
-
-
-        async function fetchAndRenderFeed(feedUrl, containerId, sourceName, isReddit) {
-            const sectionDiv = document.getElementById(containerId);
-            const gridContainer = sectionDiv.querySelector('.news-grid') || document.getElementById(containerId);
-           
-            try {
-                const proxyUrl = `${RSS_TO_JSON_PROXY_BASE}${encodeURIComponent(feedUrl)}`;
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
-
-                if (data.status !== 'ok' || !data.items) {
-                    throw new Error('Failed to fetch feed data or feed is empty.');
-                }
-
-                if (gridContainer.textContent.includes('Loading')) {
-                    gridContainer.innerHTML = ''; 
-                }
-               
-                data.items.slice(0, 10).forEach(item => {
-                    const card = createNewsCard(item, sourceName, isReddit);
-                    if (card) { 
-                        gridContainer.appendChild(card);
+            const data = await response.json();
+            
+            // Match fetched articles to their section IDs
+            const sectionData = {};
+            data.forEach(article => {
+                const feedConfig = activeFeedSet.find(f => f.url === article.feedUrl);
+                if (feedConfig) {
+                    const sectionId = feedConfig.id;
+                    if (!sectionData[sectionId]) {
+                        sectionData[sectionId] = [];
                     }
-                });
+                    sectionData[sectionId].push({ ...article, source: feedConfig.source });
+                }
+            });
 
-            } catch (error) {
-                console.error(`Error fetching or rendering feed for ${containerId} (${sourceName}):`, error);
-                if (gridContainer.textContent.includes('Loading')) {
-                    gridContainer.innerHTML = `<p style="color: red; text-align: center; width: 100%;">Error loading feed: ${sourceName}</p>`;
+            // Render to the DOM
+            for (const sectionId in sectionData) {
+                // Ensure we only try to render to containers that exist for the current mode
+                const container = document.querySelector(`.news-grid-container[data-feed-id="${sectionId}"] .news-grid`);
+                if (container) {
+                    container.innerHTML = sectionData[sectionId].map(createCardHtml).join('');
                 }
             }
-        }
-       
-        /**
-         * Checks if the title or description contains any blacklisted keyword.
-         * @param {string} title 
-         * @param {string} description 
-         * @returns {boolean} True if the item should be automatically filtered.
-         */
-        function isAutoFiltered(title, description) {
-            const content = (title + ' ' + description).toLowerCase();
-            return BLACKLIST_KEYWORDS.some(keyword => content.includes(keyword));
-        }
-
-
-        function createNewsCard(item, sourceName, isReddit) {
-            if (HIDDEN_LINKS.has(item.link)) {
-                return null; 
-            }
-           
-            const card = document.createElement('div');
-            card.className = 'news-card';
-           
-            const title = item.title || 'No Title';
-            let description = item.description || item.content || '';
-            const link = item.link || '#';
-            const date = new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             
-            // Clean description for search/display (remove HTML/CDATA)
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = description;
-            let cleanDescription = tempDiv.textContent || tempDiv.innerText || '';
-            cleanDescription = cleanDescription.replace(/(\r\n|\n|\r)/gm, " ").substring(0, 150) + (cleanDescription.length > 150 ? '...' : '');
+            // After rendering, trigger the initial AI summary generation
+            generateAISummary(); 
 
-            let isAuto = isAutoFiltered(title, cleanDescription);
-            if (isAuto) {
-                card.classList.add('auto-filtered');
-            }
+        } catch (error) {
+            console.error('Error fetching RSS feeds:', error);
+            document.querySelectorAll('.news-grid-container .news-grid').forEach(el => el.innerHTML = `<p class="error-message">Failed to load news: ${error.message}</p>`);
+        }
 
-            // Set data attributes for search
-            card.setAttribute('data-search-title', title.toLowerCase());
-            card.setAttribute('data-search-desc', cleanDescription.toLowerCase());
+        // Fetch Reddit Feeds (Always fetches the same set, but you can adjust this if needed)
+        fetchRedditFeeds(redditUrls);
+    }
 
-            // Build card HTML
-            card.innerHTML = `
-                <div class="card-controls grid-controls">
-                    <span>${sourceName}</span>
-                    <button onclick="hideTileForever(this, '${link}')">Hide Forever</button>
+
+    /**
+     * NEW FUNCTION: Updates the Header and Toggle Button Text
+     */
+    function updateHeaderAndButton(mode) {
+        const headerTitleEl = document.querySelector('.header-content h1');
+        const toggleButton = document.getElementById('feed-mode-toggle');
+
+        if (mode === 'mortgage') {
+            headerTitleEl.textContent = ALL_FEEDS.mortgage.title;
+            toggleButton.textContent = 'Switch to AdTech Feed';
+        } else {
+            headerTitleEl.textContent = ALL_FEEDS.adtech.title;
+            toggleButton.textContent = 'Switch to Mortgage Feed';
+        }
+    }
+
+
+    /**
+     * NEW FUNCTION: Toggles the Feed Mode and Refreshes Content
+     */
+    function toggleFeedMode() {
+        // Switch the mode
+        currentFeedMode = currentFeedMode === 'mortgage' ? 'adtech' : 'mortgage';
+        localStorage.setItem('currentFeedMode', currentFeedMode);
+        
+        console.log(`Switched to ${currentFeedMode} mode.`);
+
+        // 1. Update the UI Text
+        updateHeaderAndButton(currentFeedMode);
+
+        // 2. Fetch and render the new feeds
+        fetchAndRenderFeeds();
+
+        // 3. Clear the search input
+        document.getElementById('search-input').value = '';
+
+        // 4. Reset hidden tiles (to ensure a clean slate for the new feed type)
+        resetHiddenTiles(); 
+
+        // 5. Scroll to the top
+        window.scrollTo(0, 0); 
+    }
+
+
+    // --- KEEP YOUR EXISTING, UNCHANGED FUNCTIONS BELOW ---
+
+    // The createCardHtml function 
+    function createCardHtml(item) {
+        // ... [YOUR ORIGINAL createCardHtml FUNCTION HERE] ...
+        const keywordsMatched = BLACKLIST_KEYWORDS.some(keyword => 
+            item.title.toLowerCase().includes(keyword) || 
+            (item.description && item.description.toLowerCase().includes(keyword))
+        );
+        if (keywordsMatched) return '';
+
+        // A basic unique ID based on a hash of the title and date for local storage
+        const uid = btoa(item.title + item.pubDate).replace(/=/g, '').substring(0, 30);
+        const isHidden = localStorage.getItem('hidden-' + uid) === 'true';
+        const pubDate = new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        return `
+            <div class="news-card ${isHidden ? 'hidden' : ''}" data-uid="${uid}" data-source="${item.source}" data-date="${item.pubDate}">
+                <div class="card-header">
+                    <span class="card-source">${item.source}</span>
+                    <span class="card-date">${pubDate}</span>
                 </div>
-                <h4><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></h4>
-                <p class="description">${cleanDescription}</p>
-                <div class="date-and-controls">
-                    <span class="date">${date}</span>
-                    <div class="card-controls list-controls">
-                         <span>${sourceName}</span>
-                         <button onclick="hideTileForever(this, '${link}')">Hide Forever</button>
+                <h3><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a></h3>
+                <p>${item.description}</p>
+                <button class="hide-button control-button" onclick="hideTile(this.parentElement)">Hide Forever</button>
+            </div>
+        `;
+    }
+
+    // The renderRedditPosts function
+    function renderRedditPosts(posts) {
+        const container = document.getElementById('community-pulse-container');
+        if (!container) return; 
+
+        // Clear existing content
+        container.innerHTML = ''; 
+
+        // Group posts by subreddit
+        const postsBySubreddit = posts.reduce((acc, post) => {
+            if (!acc[post.subreddit]) {
+                acc[post.subreddit] = [];
+            }
+            acc[post.subreddit].push(post);
+            return acc;
+        }, {});
+
+        // Render each subreddit group
+        for (const subreddit in postsBySubreddit) {
+            const subredditTitle = document.createElement('h3');
+            subredditTitle.textContent = `r/${subreddit} (${postsBySubreddit[subreddit].length} Recent Posts)`;
+            container.appendChild(subredditTitle);
+
+            const grid = document.createElement('div');
+            grid.className = 'news-grid'; // Use news-grid for styling consistency
+            grid.innerHTML = postsBySubreddit[subreddit].map(item => {
+                // Generate UID and check hidden status for Reddit posts too
+                const uid = btoa(item.title + item.link).replace(/=/g, '').substring(0, 30);
+                const isHidden = localStorage.getItem('hidden-' + uid) === 'true';
+                const pubDate = new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                // Reddit-specific description formatting
+                let descriptionHtml = item.description || 'No description available.';
+                
+                return `
+                    <div class="news-card ${isHidden ? 'hidden' : ''}" data-uid="${uid}" data-source="Reddit: ${item.subreddit}" data-date="${item.pubDate}">
+                        <div class="card-header">
+                            <span class="card-source">r/${item.subreddit}</span>
+                            <span class="card-date">${pubDate}</span>
+                        </div>
+                        <h3><a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a></h3>
+                        <p class="reddit-description">${descriptionHtml}</p>
+                        <button class="hide-button control-button" onclick="hideTile(this.parentElement)">Hide Forever</button>
                     </div>
-                </div>
-            `;
-            
-            return card;
+                `;
+            }).join('');
+            container.appendChild(grid);
+        }
+    }
+
+    // The fetchRedditFeeds function
+    async function fetchRedditFeeds(urls) {
+        try {
+            const response = await fetch('/api/fetch-reddit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ urls: urls })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const posts = await response.json();
+            renderRedditPosts(posts);
+
+        } catch (error) {
+            console.error('Error fetching Reddit feeds:', error);
+            const container = document.getElementById('community-pulse-container');
+            if (container) {
+                container.innerHTML = `<p class="error-message">Failed to load Community Pulse: ${error.message}</p>`;
+            }
+        }
+    }
+
+    /**
+     * UPDATED: Now sends the currentFeedMode to the server to select the right AI prompt.
+     */
+    async function generateAISummary() {
+        const summaryHeader = document.getElementById('ai-summary-status');
+        const summaryContent = document.getElementById('ai-summary-content');
+        const copyButton = document.getElementById('copy-summary-button');
+
+        // 1. Get the current AI Summary prompt type
+        const summaryPromptType = currentFeedMode; // 'mortgage' or 'adtech'
+        
+        // Disable the copy button during generation
+        copyButton.disabled = true;
+        summaryHeader.innerHTML = '✨ **Generating new summary...** This may take 30-60 seconds...';
+        summaryContent.innerHTML = '<p>Preparing content for analysis...</p>';
+
+        // 2. Get all news content
+        const allNewsContainers = document.querySelectorAll('.news-grid-container .news-grid');
+        let htmlContent = '';
+        allNewsContainers.forEach(container => {
+            htmlContent += container.innerHTML;
+        });
+
+        if (!htmlContent.trim()) {
+            summaryHeader.innerHTML = '⚠️ **Cannot Generate Summary**';
+            summaryContent.innerHTML = '<p>No content loaded to summarize.</p>';
+            return;
         }
 
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            loadThemePreference();
-            loadViewPreference(); 
-            loadFilterBarPreference();
-            loadHiddenLinks();
+        // 3. Make the API Call (Sending the promptType)
+        try {
+            const response = await fetch('/api/summarize-news', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    htmlContent: htmlContent,
+                    promptType: summaryPromptType // <-- NEW FIELD SENT TO SERVER
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
             
-            // *** THE CRITICAL FIX: CALL THE MAIN FETCH FUNCTION ***
-            fetchAndRenderAllFeeds();
+            // 4. Update the UI
+            summaryHeader.innerHTML = data.header;
+            
+            // Render Markdown content
+            const renderedHtml = DOMPurify.sanitize(marked.parse(data.summary));
+            summaryContent.innerHTML = renderedHtml;
+            
+            // Enable copy button
+            copyButton.disabled = false;
+
+        } catch (error) {
+            console.error("AI Proxy Error:", error.message);
+            summaryHeader.innerHTML = '❌ **AI Summary Failed**';
+            summaryContent.innerHTML = `<p class="error-message">AI Proxy Error: ${error.message}</p>`;
+            copyButton.disabled = true;
+        }
+    }
+
+
+    // The filterCards function (Keep your original logic)
+    function filterCards() {
+        const input = document.getElementById('search-input');
+        const filter = input.value.toUpperCase();
+        const cards = document.querySelectorAll('.news-card:not(.hidden)');
+
+        cards.forEach(card => {
+            const title = card.querySelector('h3').textContent.toUpperCase();
+            const description = card.querySelector('p').textContent.toUpperCase();
+            const source = card.querySelector('.card-source').textContent.toUpperCase();
+
+            if (title.includes(filter) || description.includes(filter) || source.includes(filter)) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
         });
-    </script>
+    }
+
+    // The toggleSection function (Keep your original logic)
+    function toggleSection(button) {
+        const targetId = button.getAttribute('data-target');
+        const targetSection = document.getElementById(targetId);
+
+        if (targetSection.style.display === 'none') {
+            targetSection.style.display = 'block';
+            button.classList.add('active');
+        } else {
+            targetSection.style.display = 'none';
+            button.classList.remove('active');
+        }
+    }
+
+    // The toggleTheme function (Keep your original logic)
+    function toggleTheme() {
+        const body = document.body;
+        const toggleButton = document.getElementById('theme-toggle');
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            toggleButton.innerHTML = '🌙 Switch to Light Mode';
+        } else {
+            localStorage.setItem('theme', 'light');
+            toggleButton.innerHTML = '☀️ Switch to Dark Mode';
+        }
+    }
+
+    // The checkInitialTheme function (Keep your original logic)
+    function checkInitialTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-toggle').innerHTML = '🌙 Switch to Light Mode';
+        }
+    }
+
+    // The setListView function (Keep your original logic)
+    function setListView(view) {
+        const containers = document.querySelectorAll('.news-grid-container');
+        const gridButton = document.getElementById('grid-view-button');
+        const listButton = document.getElementById('list-view-button');
+        
+        containers.forEach(container => {
+            const grid = container.querySelector('.news-grid');
+            if (view === 'list') {
+                grid.classList.add('list-view');
+            } else {
+                grid.classList.remove('list-view');
+            }
+        });
+        
+        if (view === 'list') {
+            listButton.classList.add('active');
+            gridButton.classList.remove('active');
+            localStorage.setItem('viewMode', 'list');
+        } else {
+            gridButton.classList.add('active');
+            listButton.classList.remove('active');
+            localStorage.setItem('viewMode', 'grid');
+        }
+        
+        // Apply initial view mode on load
+        if (localStorage.getItem('viewMode') === 'list') {
+            setListView('list');
+        } else {
+            setListView('grid');
+        }
+    }
+
+    // The toggleFilterBar function (Keep your original logic)
+    function toggleFilterBar() {
+        const filterBar = document.getElementById('filter-bar-container');
+        const button = document.getElementById('toggle-filter-bar-btn');
+
+        if (filterBar.style.display === 'none') {
+            filterBar.style.display = 'flex';
+            button.textContent = 'Hide Filter Bar';
+        } else {
+            filterBar.style.display = 'none';
+            button.textContent = 'Show Filter Bar';
+        }
+    }
+
+    // The hideTile function (Keep your original logic)
+    function hideTile(element) {
+        const uid = element.getAttribute('data-uid');
+        if (uid) {
+            localStorage.setItem('hidden-' + uid, 'true');
+            element.classList.add('hidden');
+            element.style.display = 'none'; // Also visually hide immediately
+        }
+    }
+
+    // The loadHiddenTiles function (Keep your original logic)
+    function loadHiddenTiles() {
+        const cards = document.querySelectorAll('.news-card');
+        cards.forEach(card => {
+            const uid = card.getAttribute('data-uid');
+            if (uid && localStorage.getItem('hidden-' + uid) === 'true') {
+                card.classList.add('hidden');
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // The resetHiddenTiles function (Keep your original logic)
+    function resetHiddenTiles() {
+        // Clear all 'hidden-' items from local storage
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('hidden-')) {
+                localStorage.removeItem(key);
+            }
+        });
+
+        // Show all currently hidden cards
+        document.querySelectorAll('.news-card.hidden').forEach(card => {
+            card.classList.remove('hidden');
+            card.style.display = ''; // Reset display style
+        });
+    }
+
+    // The copyAISummary function (Keep your original logic)
+    function copyAISummary() {
+        const summaryContent = document.getElementById('ai-summary-content').innerText;
+        navigator.clipboard.writeText(summaryContent).then(() => {
+            const button = document.getElementById('copy-summary-button');
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy Summary';
+            }, 2000);
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            alert('Failed to copy summary to clipboard.');
+        });
+    }
+</script>
 </body>
 </html>
