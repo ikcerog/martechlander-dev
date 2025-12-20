@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AdTech News - AI Strategy Summary</title>
+    <link>http://localhost:3000</link>
+    <description>Claude AI-generated strategic analysis of AdTech, Marketing, and Enterprise Technology news</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 20 Dec 2025 00:00:00 EST</lastBuildDate>
+    <atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>AI Strategy Summary - AdTech & Marketing News</title>
+      <link>http://localhost:3000</link>
+      <guid isPermaLink="false">adtech-summary-2025-12-20</guid>
+      <pubDate>Sat, 20 Dec 2025 00:00:00 EST</pubDate>
+      <description><![CDATA[
+## 📰 Core Trends & Market Focus
+* **Trend Analysis**: AI-powered strategic insights from aggregated AdTech, Marketing, and Enterprise Technology news sources
+* **Market Intelligence**: Real-time analysis of industry developments, competitive movements, and emerging opportunities
+* **Technology Shifts**: Coverage of ad technology evolution, programmatic trends, and digital transformation
+
+## 💡 Strategic Takeaways for AdTech Leadership
+* **For Branding & Campaigns**: Strategic recommendations based on current market dynamics and consumer behavior trends
+* **For Ad Technology**: Technology investment priorities and platform evolution insights
+* **For Enterprise Tech/FinTech**: Business implications of market shifts and regulatory changes
+
+## 📉 Potential Risks & Blindspots
+* **Market Monitoring**: Identification of emerging risks, competitive threats, and regulatory challenges
+* **Opportunity Recognition**: Analysis of market gaps and strategic opportunities for competitive advantage
+
+---
+
+**Note**: This feed contains AI-generated strategic analysis powered by Claude (Anthropic).
+The summary is updated periodically based on aggregated news from Marketing Dive, Adweek, AdExchanger,
+VideoWeek, CIO Dive, Banking Dive, Wired, and other industry sources.
+
+**How it works**:
+1. The system aggregates news from 10+ industry RSS feeds
+2. Claude AI analyzes the content for strategic patterns and insights
+3. A structured summary is generated highlighting trends, takeaways, and risks
+4. This feed is updated when new analysis is available
+
+**Throttling**: To conserve API resources, summaries are generated no more frequently than every 91 minutes.
+      ]]></description>
+    </item>
+  </channel>
+</rss>
