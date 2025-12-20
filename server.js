@@ -103,14 +103,80 @@ function formatTimestamp(msTimestamp) {
     });
 }
 
+/**
+ * Updates the feed.xml file with the latest Claude summary
+ * @param {number} timestamp
+ * @param {string} summary
+ * @returns {Promise<void>}
+ */
+async function updateFeedXML(timestamp, summary) {
+    const RFC822_DATE = new Date(timestamp).toUTCString();
+    const GUID = `adtech-summary-${new Date(timestamp).toISOString().split('T')[0]}`;
+
+    // Escape the summary content for XML CDATA
+    const escapedSummary = summary.replace(/]]>/g, ']]]]><![CDATA[>');
+
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AdTech News - AI Strategy Summary</title>
+    <link>http://localhost:3000</link>
+    <description>Claude AI-generated strategic analysis of AdTech, Marketing, and Enterprise Technology news</description>
+    <language>en-us</language>
+    <lastBuildDate>${RFC822_DATE}</lastBuildDate>
+    <atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>AI Strategy Summary - AdTech &amp; Marketing News</title>
+      <link>http://localhost:3000</link>
+      <guid isPermaLink="false">${GUID}</guid>
+      <pubDate>${RFC822_DATE}</pubDate>
+      <description><![CDATA[
+${escapedSummary}
+
+---
+
+**Last Updated**: ${formatTimestamp(timestamp)}
+
+**About This Feed**:
+This feed contains AI-generated strategic analysis powered by Claude (Anthropic).
+The summary is updated periodically based on aggregated news from Marketing Dive, Adweek, AdExchanger,
+VideoWeek, CIO Dive, Banking Dive, Wired, and other industry sources.
+
+**How it works**:
+1. The system aggregates news from 10+ industry RSS feeds
+2. Claude AI analyzes the content for strategic patterns and insights
+3. A structured summary is generated highlighting trends, takeaways, and risks
+4. This feed is updated when new analysis is available
+
+**Throttling**: To conserve API resources, summaries are generated no more frequently than every ${THROTTLE_MINUTES} minutes.
+      ]]></description>
+    </item>
+  </channel>
+</rss>`;
+
+    try {
+        await fs.writeFile('feed.xml', xmlContent, 'utf8');
+        console.log('✅ feed.xml updated successfully');
+    } catch (error) {
+        console.error('❌ Error writing feed.xml:', error);
+    }
+}
+
 
 // 1. Serve the main HTML file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// 2. Serve the RSS/XML feed file
+app.get('/feed.xml', (req, res) => {
+    res.set('Content-Type', 'application/rss+xml');
+    res.sendFile(path.join(__dirname, 'feed.xml'));
+});
 
-// 2. AI Summary Endpoint (Caching/Throttling logic KEPT, API call changed)
+
+// 3. AI Summary Endpoint (Caching/Throttling logic KEPT, API call changed)
 app.post('/api/summarize-news', async (req, res) => {
     const htmlContent = req.body.htmlContent;
     const currentTime = Date.now();
@@ -133,8 +199,11 @@ app.post('/api/summarize-news', async (req, res) => {
                 The AI model was not called, to conserve the finite API interactions per day.
                 ---
             `;
-            
+
             summaryToReturn = cachedData.summary; // Return CLEAN summary
+
+            // Ensure the XML feed is up to date with cached summary
+            await updateFeedXML(cachedData.timestamp, cachedData.summary);
 
         } else {
             // --- THROTTLING WINDOW EXPIRED: GENERATE NEW SUMMARY ---
@@ -219,9 +288,12 @@ app.post('/api/summarize-news', async (req, res) => {
             // Extract the summary text from Claude's response structure
             const newSummary = data.content?.[0]?.text || "Error: Could not extract summary text from Claude response.";
             const newTimestamp = Date.now();
-            
+
             // Save the new summary and timestamp to the cache
             await writeCache(newTimestamp, newSummary);
+
+            // Update the XML feed with the new summary
+            await updateFeedXML(newTimestamp, newSummary);
 
             // Construct the header for the *new* summary output
             headerToReturn = `
