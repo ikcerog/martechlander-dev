@@ -786,7 +786,7 @@
 
 
         // --- AI SUMMARY INTEGRATION FUNCTION (Calls Server) ---
-        async function generateAISummary() {
+        async function generateAISummary(forceRegenerate = false) {
             const statusDiv = document.getElementById('ai-summary-status'); // NEW: For throttle message
             const summaryDiv = document.getElementById('ai-summary-content'); // For clean summary
            
@@ -818,7 +818,7 @@
                 const response = await fetch('/api/summarize-news', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ htmlContent: htmlContent }),
+                    body: JSON.stringify({ htmlContent: htmlContent, forceRegenerate: forceRegenerate }),
                 });
 
                 const data = await response.json();
@@ -834,7 +834,12 @@
                 // CRITICAL CHANGE: Display header and summary separately
                 statusDiv.innerHTML = data.header; // The status/throttle message goes here
                 summaryDiv.innerHTML = data.summary; // The clean summary content goes here
-                
+
+                // If throttled, add a "Force Re-generate" button
+                if (data.header && data.header.includes('Throttle Active')) {
+                    statusDiv.innerHTML += `<p><button onclick="generateAISummary(true)" style="margin-top: 10px; background: #ff6b6b; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">⚡ Force Re-generate Anyway (uses API credits)</button></p>`;
+                }
+
                 enableCopyButton();
 
             } catch (e) {

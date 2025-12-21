@@ -179,12 +179,13 @@ app.get('/feed.xml', (req, res) => {
 // 3. AI Summary Endpoint (Caching/Throttling logic KEPT, API call changed)
 app.post('/api/summarize-news', async (req, res) => {
     const htmlContent = req.body.htmlContent;
+    const forceRegenerate = req.body.forceRegenerate || false;
     const currentTime = Date.now();
     let cachedData = await readCache();
     let summaryToReturn = null;
     let headerToReturn = null;
 
-    if (cachedData) {
+    if (cachedData && !forceRegenerate) {
         const timeElapsed = currentTime - cachedData.timestamp;
 
         if (timeElapsed < THROTTLE_MILLISECONDS) {
