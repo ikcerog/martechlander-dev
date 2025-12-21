@@ -10,7 +10,7 @@ const CACHE_FILE = 'summary_cache.txt';
 const THROTTLE_MINUTES = 91;
 const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000;
 const apiKey = process.env.CLAUDE_API_KEY ? process.env.CLAUDE_API_KEY.trim() : null;
-const CLAUDE_MODEL = "claude-3-5-sonnet-20241022";
+const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const API_URL = "https://api.anthropic.com/v1/messages";
 const RSS_TO_JSON_PROXY_BASE = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
