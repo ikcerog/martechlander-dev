@@ -22,8 +22,8 @@ const THROTTLE_MILLISECONDS = THROTTLE_MINUTES * 60 * 1000;
 // Ensure the API key is read and any accidental whitespace is trimmed
 const apiKey = process.env.CLAUDE_API_KEY ? process.env.CLAUDE_API_KEY.trim() : null; 
 
-// FIX: Using the model ID explicitly cited in the latest Anthropic documentation.
-const CLAUDE_MODEL = "claude-sonnet-4-5"; 
+// Using the latest Claude 3.5 Sonnet model
+const CLAUDE_MODEL = "claude-3-5-sonnet-20241022"; 
 const API_URL = "https://api.anthropic.com/v1/messages";
 
 if (!apiKey) {
