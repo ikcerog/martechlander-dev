@@ -1,19 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>AdTech News - AI Strategy Summary</title>
-    <link>http://localhost:3000</link>
-    <description>Claude AI-generated strategic analysis of AdTech, Marketing, and Enterprise Technology news</description>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 21 Dec 2025 03:19:02 GMT</lastBuildDate>
-    <atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
-
-    <item>
-      <title>AI Strategy Summary - AdTech &amp; Marketing News</title>
-      <link>http://localhost:3000</link>
-      <guid isPermaLink="false">adtech-summary-2025-12-21</guid>
-      <pubDate>Sun, 21 Dec 2025 03:19:02 GMT</pubDate>
-      <description><![CDATA[
+1766287142066
 ## 📰 Core Trends & Market Focus
 
 * **AI Integration & Governance**: AI continues to dominate strategic discussions across AdTech, with both excitement around capabilities (ChatGPT, Claude.AI, Apple Intelligence) and growing concerns about governance, measurement, and responsible implementation. The gap between AI promise and execution remains wide.
@@ -41,24 +26,3 @@
 * **Consumer Trust Erosion**: The UnitedHealth crisis, ethical concerns about manipulative D2C marketing, and backlash against performative corporate initiatives reveal deep consumer skepticism. Brands perceived as prioritizing extraction over value-creation will face reputational damage that affects long-term pricing power and customer acquisition costs.
 
 * **Talent & Skills Mismatch**: Widespread confusion about AI's role (junior marketers struggling with basic tasks, agencies fighting over ChatGPT copy edits, educators worried about "one chatbot per child") indicates the industry lacks clear frameworks for human-AI collaboration. The next 12 months will create winners and losers based on who solves this problem fastest—companies that don't invest in upskilling and clear AI governance will hemorrhage top talent.
-
----
-
-**Last Updated**: Dec 20, 2025, 10:19:02 PM EST
-
-**About This Feed**:
-This feed contains AI-generated strategic analysis powered by Claude (Anthropic).
-The summary is updated periodically based on aggregated news from Marketing Dive, Adweek, AdExchanger,
-VideoWeek, CIO Dive, Banking Dive, Wired, and other industry sources.
-
-**How it works**:
-1. The system aggregates news from 15+ industry RSS feeds
-2. Claude AI analyzes the content for strategic patterns and insights
-3. A structured summary is generated highlighting trends, takeaways, and risks
-4. This feed is updated daily via automated GitHub Actions
-
-**Throttling**: To conserve API resources, summaries are generated no more frequently than every 91 minutes.
-      ]]></description>
-    </item>
-  </channel>
-</rss>
