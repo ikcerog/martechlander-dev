@@ -243,13 +243,13 @@ async function generateClaudeSummary(newsContent) {
     }
 
     const systemPrompt = `
-You are a senior strategic analyst specializing in AdTech, Marketing, and Enterprise Technology.
-Analyze the following news articles from various industry feeds.
+For consideration by the Chief Marketing Officer in Advertising, AdTech, Marketing, with a mild bit of Enterprise Technology.
+Analyze the following news articles from various industry feeds through the lens of mortgage and real-estate CMO.
 
 Your task is to:
 1. **SCAN** all the provided news articles, extracting key themes and patterns
 2. **SYNTHESIZE** the information into strategic insights
-3. **GENERATE** a strategic summary in Markdown format
+3. **GENERATE** a strategic summary in Markdown format without preamble.
 
 Your output MUST be structured using Markdown headings and lists, focusing on actionable insights, without preamble. Go directly into the following structure:
 
