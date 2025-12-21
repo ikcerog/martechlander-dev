@@ -785,6 +785,57 @@
         }
 
 
+        // --- AUTO-LOAD CACHED SUMMARY ON PAGE LOAD ---
+        async function loadCachedSummary() {
+            const statusDiv = document.getElementById('ai-summary-status');
+            const summaryDiv = document.getElementById('ai-summary-content');
+            const generateBtn = document.getElementById('generate-summary-button');
+
+            try {
+                const response = await fetch('/api/get-cached-summary');
+                const data = await response.json();
+
+                if (!data.cached) {
+                    // No cache available
+                    statusDiv.innerHTML = `<p style="color: #888;">${data.message}</p>`;
+                    summaryDiv.innerHTML = '';
+                    generateBtn.textContent = '✨ Generate Summary';
+                    return;
+                }
+
+                // Display cached summary
+                summaryDiv.innerHTML = data.summary;
+                enableCopyButton();
+
+                if (data.isThrottled) {
+                    // Show throttle status
+                    statusDiv.innerHTML = `
+                        <div style="background: #fff3cd; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <h3 style="margin: 0 0 8px 0;">⏳ Summary Throttle Active</h3>
+                            <p style="margin: 4px 0;">Last generated at <strong>${data.formattedTime}</strong></p>
+                            <p style="margin: 4px 0;">Next generation available at <strong>${data.nextRunTime}</strong> (in ${data.minutesRemaining} minutes)</p>
+                            <p style="margin: 8px 0 0 0; font-size: 0.9em; color: #666;">The AI model was not called to conserve API usage.</p>
+                        </div>
+                    `;
+                    generateBtn.textContent = '⚡ Force Re-generate (uses API credits)';
+                    generateBtn.style.background = '#ff6b6b';
+                } else {
+                    // Cache exists but throttle expired
+                    statusDiv.innerHTML = `
+                        <div style="background: #d4edda; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <p style="margin: 0;">✅ Last generated at <strong>${data.formattedTime}</strong></p>
+                            <p style="margin: 4px 0 0 0; font-size: 0.9em; color: #666;">You can generate a fresh summary now.</p>
+                        </div>
+                    `;
+                    generateBtn.textContent = '🔄 Re-generate Summary';
+                    generateBtn.style.background = '#28a745';
+                }
+
+            } catch (error) {
+                console.error('Error loading cached summary:', error);
+            }
+        }
+
         // --- AI SUMMARY INTEGRATION FUNCTION (Calls Server) ---
         async function generateAISummary(forceRegenerate = false) {
             const statusDiv = document.getElementById('ai-summary-status'); // NEW: For throttle message
@@ -831,16 +882,8 @@
                     return;
                 }
 
-                // CRITICAL CHANGE: Display header and summary separately
-                statusDiv.innerHTML = data.header; // The status/throttle message goes here
-                summaryDiv.innerHTML = data.summary; // The clean summary content goes here
-
-                // If throttled, add a "Force Re-generate" button
-                if (data.header && data.header.includes('Throttle Active')) {
-                    statusDiv.innerHTML += `<p><button onclick="generateAISummary(true)" style="margin-top: 10px; background: #ff6b6b; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">⚡ Force Re-generate Anyway (uses API credits)</button></p>`;
-                }
-
-                enableCopyButton();
+                // After generating, reload the cached summary to update UI properly
+                await loadCachedSummary();
 
             } catch (e) {
                 statusDiv.innerHTML = ``;
@@ -977,12 +1020,13 @@
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             loadThemePreference();
-            loadViewPreference(); 
+            loadViewPreference();
             loadFilterBarPreference();
             loadHiddenLinks();
-            
-            // *** THE CRITICAL FIX: CALL THE MAIN FETCH FUNCTION ***
+
+            // Fetch RSS feeds and load cached AI summary in parallel
             fetchAndRenderAllFeeds();
+            loadCachedSummary(); // Auto-display cached summary on page load
         });
     </script>
 </body>
