@@ -413,7 +413,6 @@
             padding: 10px 0 0 0;
             margin-bottom: 10px;
             line-height: 1.5;
-            white-space: pre-wrap;
             border-bottom: 1px dashed var(--border-color);
         }
 
@@ -812,7 +811,7 @@
                     statusDiv.innerHTML = `<p style="color: var(--secondary-text-color); font-size: 0.9em; margin: 8px 0;">${data.message}</p>`;
                     summaryDiv.innerHTML = '';
                     generateBtn.textContent = '✨ Generate Summary';
-                    generateBtn.style.cssText = 'background: var(--accent-color); color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em;';
+                    generateBtn.style.cssText = 'background: var(--accent-color); color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-left: 8px;';
                     generateBtn.onclick = () => generateAISummary();
                     return;
                 }
@@ -822,28 +821,32 @@
                 enableCopyButton();
 
                 if (data.isThrottled) {
-                    // Show throttle status
+                    // Show throttle status (collapsible)
+                    const statusId = 'throttle-status-box';
                     statusDiv.innerHTML = `
-                        <div style="background: var(--card-background); border: 2px solid var(--secondary-accent-2); padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                            <h3 style="margin: 0 0 6px 0; color: var(--secondary-accent-2); font-size: 1em;">⏳ Summary Throttle Active</h3>
-                            <p style="margin: 3px 0; color: var(--text-color); font-size: 0.9em;">Last generated: <strong>${data.formattedTime}</strong></p>
-                            <p style="margin: 3px 0; color: var(--text-color); font-size: 0.9em;">Next available: <strong>${data.nextRunTime}</strong> (${data.minutesRemaining} min)</p>
-                            <p style="margin: 6px 0 0 0; font-size: 0.85em; color: var(--secondary-text-color);">AI not called to conserve API usage.</p>
+                        <div id="${statusId}" style="background: var(--card-background); border: 2px solid var(--secondary-accent-2); padding: 10px; border-radius: 6px; margin-bottom: 10px; cursor: pointer;" onclick="this.querySelector('.throttle-details').style.display = this.querySelector('.throttle-details').style.display === 'none' ? 'block' : 'none'">
+                            <h3 style="margin: 0; color: var(--secondary-accent-2); font-size: 1em;">⏳ Summary Throttle Active <span style="font-size: 0.8em; color: var(--secondary-text-color);">(click to toggle)</span></h3>
+                            <div class="throttle-details">
+                                <p style="margin: 6px 0 3px 0; color: var(--text-color); font-size: 0.9em;">Last generated: <strong>${data.formattedTime}</strong></p>
+                                <p style="margin: 3px 0; color: var(--text-color); font-size: 0.9em;">Next available: <strong>${data.nextRunTime}</strong> (${data.minutesRemaining} min)</p>
+                                <p style="margin: 6px 0 0 0; font-size: 0.85em; color: var(--secondary-text-color);">AI not called to conserve API usage.</p>
+                            </div>
                         </div>
                     `;
                     generateBtn.textContent = '⚡ Force Re-generate';
-                    generateBtn.style.cssText = 'background: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em;';
+                    generateBtn.style.cssText = 'background: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-left: 8px;';
                     generateBtn.onclick = () => confirmForceRegenerate();
                 } else {
-                    // Cache exists but throttle expired
+                    // Cache exists but throttle expired (collapsible)
+                    const statusId = 'ready-status-box';
                     statusDiv.innerHTML = `
-                        <div style="background: var(--card-background); border: 2px solid var(--secondary-accent-1); padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                            <p style="margin: 0; color: var(--text-color); font-size: 0.9em;">✅ Last generated: <strong>${data.formattedTime}</strong></p>
+                        <div id="${statusId}" style="background: var(--card-background); border: 2px solid var(--secondary-accent-1); padding: 10px; border-radius: 6px; margin-bottom: 10px; cursor: pointer;" onclick="this.style.display = 'none'">
+                            <p style="margin: 0; color: var(--text-color); font-size: 0.9em;">✅ Last generated: <strong>${data.formattedTime}</strong> <span style="font-size: 0.8em; color: var(--secondary-text-color);">(click to dismiss)</span></p>
                             <p style="margin: 3px 0 0 0; font-size: 0.85em; color: var(--secondary-text-color);">Ready for fresh summary.</p>
                         </div>
                     `;
                     generateBtn.textContent = '🔄 Re-generate Summary';
-                    generateBtn.style.cssText = 'background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em;';
+                    generateBtn.style.cssText = 'background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-left: 8px;';
                     generateBtn.onclick = () => generateAISummary();
                 }
 
