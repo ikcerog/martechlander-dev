@@ -478,7 +478,8 @@
     <details open="open" style="margin: 8px auto; max-width: 1400px; padding: 16px; box-shadow: 0 0 4px #33333333; border-radius: 8px;"><summary>Click to Hide/Show AI Summary</summary>
     <div id="ai-insight-panel" class="feed-section">
         <div id="ai-summary-header">
-             <h2>✨ AI Strategy Summary [Slowed in DEV]</h2>
+             <h2>✨ AI Strategy Summary</h2>
+             <button id="generate-summary-button" onclick="generateAISummary()" title="Generate AI summary (costs API credits)">Generate Summary</button>
              <button id="copy-summary-button" onclick="copyAISummary()" title="Copy the full AI Summary to your clipboard" disabled>Copy Summary</button>
         </div>
         
@@ -853,10 +854,9 @@
             const fetchEditorialPromises = EDITORIAL_FEEDS.map(feed => fetchAndRenderFeed(feed.url, feed.id, feed.source, false));
             // Await the main editorial feeds to ensure content is present for the AI
             await Promise.all(fetchEditorialPromises);
-           
-            // IMPORTANT: Trigger AI Summary after the main editorial feeds are loaded
-            // We use a slight delay just to ensure the DOM has settled after all rendering.
-            setTimeout(generateAISummary, 500); 
+
+            // Summary generation is now MANUAL - user must click "Generate Summary" button
+            // This prevents automatic API calls that cost money on every page load 
 
             // Reddit Feeds setup (can run in parallel or after summary trigger)
             const communityContainer = document.getElementById('community-pulse-container');
