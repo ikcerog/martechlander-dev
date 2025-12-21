@@ -175,16 +175,45 @@ app.get('/feed.xml', (req, res) => {
     res.sendFile(path.join(__dirname, 'feed.xml'));
 });
 
+// 2.5. Get cached summary without generating (for auto-display on page load)
+app.get('/api/get-cached-summary', async (req, res) => {
+    const cachedData = await readCache();
+
+    if (!cachedData) {
+        return res.json({
+            cached: false,
+            message: "No summary available yet. Click 'Generate Summary' to create one."
+        });
+    }
+
+    const currentTime = Date.now();
+    const timeElapsed = currentTime - cachedData.timestamp;
+    const timeRemaining = THROTTLE_MILLISECONDS - timeElapsed;
+    const nextRunTime = cachedData.timestamp + THROTTLE_MILLISECONDS;
+    const isThrottled = timeElapsed < THROTTLE_MILLISECONDS;
+
+    return res.json({
+        cached: true,
+        summary: cachedData.summary,
+        timestamp: cachedData.timestamp,
+        formattedTime: formatTimestamp(cachedData.timestamp),
+        isThrottled: isThrottled,
+        nextRunTime: isThrottled ? formatTimestamp(nextRunTime) : null,
+        minutesRemaining: isThrottled ? Math.ceil(timeRemaining / (60 * 1000)) : 0
+    });
+});
+
 
 // 3. AI Summary Endpoint (Caching/Throttling logic KEPT, API call changed)
 app.post('/api/summarize-news', async (req, res) => {
     const htmlContent = req.body.htmlContent;
+    const forceRegenerate = req.body.forceRegenerate || false;
     const currentTime = Date.now();
     let cachedData = await readCache();
     let summaryToReturn = null;
     let headerToReturn = null;
 
-    if (cachedData) {
+    if (cachedData && !forceRegenerate) {
         const timeElapsed = currentTime - cachedData.timestamp;
 
         if (timeElapsed < THROTTLE_MILLISECONDS) {
