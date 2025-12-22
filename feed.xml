@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>AdTech News - AI Strategy Summary</title>
-    <link>http://localhost:3000</link>
+    <link>https://raw.githubusercontent.com/ikcerog/martechlander-dev/refs/heads/main/feed.xml</link>
     <description>Claude AI-generated strategic analysis of AdTech, Marketing, and Enterprise Technology news</description>
     <language>en-us</language>
     <lastBuildDate>Sun, 21 Dec 2025 12:59:17 GMT</lastBuildDate>
-    <atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://raw.githubusercontent.com/ikcerog/martechlander-dev/refs/heads/main/feed.xml" rel="self" type="application/rss+xml" />
 
     <item>
       <title>AI Strategy Summary - AdTech &amp; Marketing News</title>
-      <link>http://localhost:3000</link>
+      <link>https://raw.githubusercontent.com/ikcerog/martechlander-dev/refs/heads/main/feed.xml</link>
       <guid isPermaLink="false">adtech-summary-2025-12-21</guid>
       <pubDate>Sun, 21 Dec 2025 12:59:17 GMT</pubDate>
-      <description><![CDATA[
+      <description><![CDATA[Strategic AI analysis of AdTech, Marketing, and Enterprise Technology news - Updated Dec 21, 2025]]></description>
+      <content:encoded><![CDATA[
 ## 📰 Core Trends & Market Focus
 
 * **TikTok's Uncertain US Future**: Oracle-led investor group reportedly signing deal for TikTok's US operations amid ongoing regulatory pressure and potential divestiture requirements.
@@ -75,7 +78,7 @@ VideoWeek, CIO Dive, Banking Dive, Wired, and other industry sources.
 4. This feed is updated daily via automated GitHub Actions
 
 **Throttling**: To conserve API resources, summaries are generated no more frequently than every 91 minutes.
-      ]]></description>
+      ]]></content:encoded>
     </item>
   </channel>
 </rss>
