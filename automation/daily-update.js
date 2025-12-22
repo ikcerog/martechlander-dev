@@ -3,6 +3,7 @@
 
 const fs = require('fs').promises;
 const fetch = require('node-fetch').default || require('node-fetch');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 // Configuration
@@ -13,6 +14,12 @@ const apiKey = process.env.CLAUDE_API_KEY ? process.env.CLAUDE_API_KEY.trim() : 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const API_URL = "https://api.anthropic.com/v1/messages";
 const RSS_TO_JSON_PROXY_BASE = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+// Skip throttling for scheduled/manual runs (GitHub Actions or CLI with flag)
+const SKIP_THROTTLE = process.env.SKIP_THROTTLE === 'true' || process.env.GITHUB_ACTIONS === 'true';
+
+// Email configuration for Slack
+const SLACK_EMAIL = 'jg-workflow-sandbox-aaaamtlfgqtonfqyw6kuzymutq@rocketfoc.org.slack.com';
 
 // RSS Feed Sources
 const EDITORIAL_FEEDS = [
@@ -65,6 +72,42 @@ function formatTimestamp(msTimestamp) {
         timeZone: 'America/New_York',
         timeZoneName: 'short'
     });
+}
+
+/**
+ * Sends email notification to Slack with the summary
+ */
+async function sendEmailNotification(timestamp, summary) {
+    try {
+        // Create a test account for development (or use SMTP credentials from env)
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.SMTP_USER || 'no-reply@example.com',
+                pass: process.env.SMTP_PASS || ''
+            },
+            // If no SMTP credentials, use direct SMTP (may fail without proper setup)
+            ignoreTLS: !process.env.SMTP_USER
+        });
+
+        const formattedTime = formatTimestamp(timestamp);
+        const emailBody = `${summary}\n\n---\n\nGenerated at: ${formattedTime}\nTimestamp: ${timestamp}`;
+
+        const mailOptions = {
+            from: process.env.SMTP_USER || 'adtech-news@martechlander.com',
+            to: SLACK_EMAIL,
+            subject: `AdTech News Summary - ${formattedTime}`,
+            text: emailBody
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Email sent to ${SLACK_EMAIL}`);
+    } catch (error) {
+        console.error('⚠️  Email sending failed:', error.message);
+        // Don't fail the whole process if email fails
+    }
 }
 
 /**
@@ -313,23 +356,28 @@ Your output MUST be structured using Markdown headings and lists, focusing on ac
 async function main() {
     console.log('🚀 Daily RSS Feed Update - Starting...\n');
 
+    if (SKIP_THROTTLE) {
+        console.log('⏩ Throttle SKIPPED (scheduled/manual run mode)');
+    }
+
     try {
-        // Check cache first
+        // Check cache first (but only enforce throttle if not skipping)
         const currentTime = Date.now();
         const cachedData = await readCache();
 
-        if (cachedData) {
+        if (cachedData && !SKIP_THROTTLE) {
             const timeElapsed = currentTime - cachedData.timestamp;
 
             if (timeElapsed < THROTTLE_MILLISECONDS) {
                 const timeRemaining = Math.ceil((THROTTLE_MILLISECONDS - timeElapsed) / (60 * 1000));
                 console.log(`⏳ Summary was generated recently at ${formatTimestamp(cachedData.timestamp)}`);
                 console.log(`⏳ Next generation available in ${timeRemaining} minutes`);
-                console.log(`ℹ️  Using cached summary to update feed.xml`);
+                console.log(`ℹ️  Using cached summary to update feed.xml with NEW timestamp`);
 
-                // Update feed.xml with cached summary
-                await updateFeedXML(cachedData.timestamp, cachedData.summary);
-                console.log('\n✅ Daily update completed (using cached summary)');
+                // Update feed.xml with cached summary but NEW timestamp
+                const newTimestamp = Date.now();
+                await updateFeedXML(newTimestamp, cachedData.summary);
+                console.log('\n✅ Daily update completed (using cached summary with updated timestamp)');
                 return;
             }
         }
@@ -352,6 +400,9 @@ async function main() {
         const timestamp = Date.now();
         await writeCache(timestamp, summary);
         await updateFeedXML(timestamp, summary);
+
+        // Send email notification
+        await sendEmailNotification(timestamp, summary);
 
         console.log(`\n✅ Daily update completed successfully!`);
         console.log(`📅 Generated at: ${formatTimestamp(timestamp)}`);
