@@ -119,21 +119,24 @@ async function updateFeedXML(timestamp, summary) {
     const escapedSummary = summary.replace(/]]>/g, ']]]]><![CDATA[>');
 
     const xmlContent = `<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>AdTech News - AI Strategy Summary</title>
-    <link>http://localhost:3000</link>
+    <link>https://raw.githubusercontent.com/ikcerog/martechlander-dev/refs/heads/main/feed.xml</link>
     <description>Claude AI-generated strategic analysis of AdTech, Marketing, and Enterprise Technology news</description>
     <language>en-us</language>
     <lastBuildDate>${RFC822_DATE}</lastBuildDate>
-    <atom:link href="http://localhost:3000/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://raw.githubusercontent.com/ikcerog/martechlander-dev/refs/heads/main/feed.xml" rel="self" type="application/rss+xml" />
 
     <item>
       <title>AI Strategy Summary - AdTech &amp; Marketing News</title>
-      <link>http://localhost:3000</link>
+      <link>https://raw.githubusercontent.com/ikcerog/martechlander-dev/refs/heads/main/feed.xml</link>
       <guid isPermaLink="false">${GUID}</guid>
       <pubDate>${RFC822_DATE}</pubDate>
-      <description><![CDATA[
+      <description><![CDATA[Strategic AI analysis of AdTech, Marketing, and Enterprise Technology news - Updated ${formatTimestamp(timestamp)}]]></description>
+      <content:encoded><![CDATA[
 ${escapedSummary}
 
 ---
@@ -152,7 +155,7 @@ VideoWeek, CIO Dive, Banking Dive, Wired, and other industry sources.
 4. This feed is updated daily via automated GitHub Actions
 
 **Throttling**: To conserve API resources, summaries are generated no more frequently than every ${THROTTLE_MINUTES} minutes.
-      ]]></description>
+      ]]></content:encoded>
     </item>
   </channel>
 </rss>`;
