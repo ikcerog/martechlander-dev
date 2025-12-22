@@ -1,10 +1,10 @@
 name: Daily RSS Feed Summary Update
 
 on:
-  # schedule:  # DISABLED - uncomment when ready to enable daily automation
+  schedule:  # DISABLED - uncomment when ready to enable daily automation
   #   # Runs at 7:55 AM Eastern Time (12:55 PM UTC during EST, 11:55 AM UTC during EDT)
   #   # Using 11:55 AM UTC to cover EDT (most of the year)
-  #   - cron: '55 11 * * *'
+  - cron: '55 11 * * *'
   workflow_dispatch: # Manual triggering only (until CLAUDE_API_KEY is added to GitHub Secrets)
 
 jobs:
