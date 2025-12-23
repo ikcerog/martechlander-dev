@@ -3,7 +3,6 @@
 
 const fs = require('fs').promises;
 const fetch = require('node-fetch').default || require('node-fetch');
-const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 // Configuration
@@ -17,9 +16,6 @@ const RSS_TO_JSON_PROXY_BASE = 'https://api.rss2json.com/v1/api.json?rss_url=';
 
 // Skip throttling for scheduled/manual runs (GitHub Actions or CLI with flag)
 const SKIP_THROTTLE = process.env.SKIP_THROTTLE === 'true' || process.env.GITHUB_ACTIONS === 'true';
-
-// Email configuration for Slack
-const SLACK_EMAIL = 'jg-workflow-sandbox-aaaamtlfgqtonfqyw6kuzymutq@rocketfoc.org.slack.com';
 
 // RSS Feed Sources
 const EDITORIAL_FEEDS = [
@@ -72,42 +68,6 @@ function formatTimestamp(msTimestamp) {
         timeZone: 'America/New_York',
         timeZoneName: 'short'
     });
-}
-
-/**
- * Sends email notification to Slack with the summary
- */
-async function sendEmailNotification(timestamp, summary) {
-    try {
-        // Create a test account for development (or use SMTP credentials from env)
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.SMTP_USER || 'no-reply@example.com',
-                pass: process.env.SMTP_PASS || ''
-            },
-            // If no SMTP credentials, use direct SMTP (may fail without proper setup)
-            ignoreTLS: !process.env.SMTP_USER
-        });
-
-        const formattedTime = formatTimestamp(timestamp);
-        const emailBody = `${summary}\n\n---\n\nGenerated at: ${formattedTime}\nTimestamp: ${timestamp}`;
-
-        const mailOptions = {
-            from: process.env.SMTP_USER || 'adtech-news@martechlander.com',
-            to: SLACK_EMAIL,
-            subject: `AdTech News Summary - ${formattedTime}`,
-            text: emailBody
-        };
-
-        await transporter.sendMail(mailOptions);
-        console.log(`✅ Email sent to ${SLACK_EMAIL}`);
-    } catch (error) {
-        console.error('⚠️  Email sending failed:', error.message);
-        // Don't fail the whole process if email fails
-    }
 }
 
 /**
@@ -400,9 +360,6 @@ async function main() {
         const timestamp = Date.now();
         await writeCache(timestamp, summary);
         await updateFeedXML(timestamp, summary);
-
-        // Send email notification
-        await sendEmailNotification(timestamp, summary);
 
         console.log(`\n✅ Daily update completed successfully!`);
         console.log(`📅 Generated at: ${formatTimestamp(timestamp)}`);
